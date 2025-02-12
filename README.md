@@ -1,5 +1,5 @@
 # Reinforcement-Learning
-Ensure there are "python", "pandas", "nodejs" and "npm" available in local.
+Ensure there are "python", "pandas", "nodejs" and "npm" available in local. \n
 "python" can be checked by: "python --version"
 "nodejs" can be checked by: "node --version"
 "npm" can be checked by: "npm --version"
