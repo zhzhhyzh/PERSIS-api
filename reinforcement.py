@@ -12,59 +12,36 @@ def read_input():
 
 # Load or create user data
 def get_user_data(user_id):
-    user_file = f"{user_id}-user.csv"
+    user_file = f".\\documents\\userPath\\{user_id}-user.csv"
     if os.path.exists(user_file):
         return pd.read_csv(user_file)
     else:
         return pd.DataFrame(columns=["id", "message", "persuasive_type", "yesOrNo", "Date", "Time"])
 
-# Load or create profile data
-def get_profile_data():
-    profile_file = "profile.csv"
-    if os.path.exists(profile_file):
-        return pd.read_csv(profile_file)
-    else:
-        return pd.DataFrame(columns=["userId", "first_preference", "second_preference"])
 
-# Save updated profile data
-def save_profile_data(profile_data):
-    profile_data.to_csv("profile.csv", index=False)
 
+# Process API request
 # Process API request
 def process_request(request):
     invoke_type = request.get("invoke_type")
     user_id = request.get("userId")
     answer = request.get("answer", "")
     question_id = request.get("questionId", None)
+    pType1 = request.get("pType1", "")
+    pType2 = request.get("pType2", "")
 
-    messages_df = pd.read_csv("message.csv")
+    messages_df = pd.read_csv(r".\documents\messagePath\message.csv")  # Fix path
     user_data = get_user_data(user_id)
-    profile_data = get_profile_data()
-
-    # CASE 1: Updating User Preferences
-    if invoke_type == 1:
-        if not isinstance(answer, list) or len(answer) != 2:
-            return return_json(3, "Invalid preferences format. Please send two preferences.")
-
-        # Update user preferences in profile.csv
-        profile_data = profile_data[profile_data["userId"] != user_id]  # Remove old entry if exists
-        new_profile = pd.DataFrame([[user_id, answer[0], answer[1]]], 
-                                   columns=["userId", "first_preference", "second_preference"])
-        profile_data = pd.concat([profile_data, new_profile], ignore_index=True)
-        save_profile_data(profile_data)
-
-        return return_json(3, "Success")
 
     # CASE 2: Question fetching
-    elif invoke_type == 2:
-        profile_row = profile_data[profile_data["userId"].astype(str) == str(user_id)]
-        
-        # Ask for preferences if they don't exist
-        if profile_row.empty:
+    if invoke_type == 2:
+        if not pType1 or not pType2:
             return return_json(1, "Please enter two preferred message types.")
-
-        first_preference = profile_row.iloc[0]["first_preference"]
-        second_preference = profile_row.iloc[0]["second_preference"]
+        
+        profile_row = [pType1, pType2]
+        
+        first_preference = profile_row[0]
+        second_preference = profile_row[1]
 
         # Occasionally explore a new message type (20% chance)
         explore = random.random() < 0.2
@@ -84,15 +61,24 @@ def process_request(request):
         new_entry = pd.DataFrame([[question_id, random_message["message"], random_message["persuasive_type"], "", "", ""]], 
                                  columns=["id", "message", "persuasive_type", "yesOrNo", "Date", "Time"])
         user_data = pd.concat([user_data, new_entry], ignore_index=True)
-        user_data.to_csv(f"{user_id}-user.csv", index=False)
+        user_data.to_csv(f".\\documents\\userPath\\{user_id}-user.csv", index=False)
 
         return return_json(2, random_message["message"], question_id)
 
     # CASE 3: Update user answer in userId-user.csv
+    # CASE 3: Update user answer in userId-user.csv
     elif invoke_type == 3:
         if question_id is None:
             return return_json(3, "Question ID is required")
+
+        # Ensure question_id exists in the user data
         question_answering = user_data[user_data["id"].astype(str) == str(question_id)]
+
+        # Check if the DataFrame is empty (meaning question_id was not found)
+        if question_answering.empty:
+            return return_json(3, "Failed: Question ID not found.")
+
+        # Get the answer if it exists
         question_answered = question_answering.iloc[0]["yesOrNo"]
         if pd.notna(question_answered) and question_answered != "":
             return return_json(3, "Failed: question ID already answered.")
@@ -101,9 +87,10 @@ def process_request(request):
         gen_answer = "Y" if answer else "N"
         timestamp = datetime.datetime.now()
         user_data.loc[user_data["id"] == question_id, ["yesOrNo", "Date", "Time"]] = [gen_answer, timestamp.date(), timestamp.time()]
-        user_data.to_csv(f"{user_id}-user.csv", index=False)
+        user_data.to_csv(f".\\documents\\userPath\\{user_id}-user.csv", index=False)
 
         return return_json(3, "Success")
+
 
     return return_json(3, "Invalid invoke_type")
 
