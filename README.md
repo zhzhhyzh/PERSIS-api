@@ -12,9 +12,9 @@ Ensure the following dependencies are installed on your local machine:
 - **npm** (Check with: `npm --version`)
 
 ### Install Dependencies:
-- **pandas** (Required for data handling in Python):
+- Library in Python:
   ```sh
-  pip install pandas
+  pip install -r requirements.txt
   ```
 - **Node.js packages** (Install dependencies from `package.json`):
   ```sh
