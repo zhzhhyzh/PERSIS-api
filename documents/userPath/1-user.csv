@@ -1,102 +1,33 @@
-id,message,persuasive_type,activity,yesOrNo,Date,Time,action
-1,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:32:19.472900,1.0
-2,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:32:32.923934,1.0
-3,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:32:48.840572,1.0
-4,"Don't forget to monitor your healthy eating.
+id,message,persuasive_type,activity,yesOrNo,Date,Time
+1,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,22:58:07.637886
+2,"Try to improve your water intake by drinking a limited amount of water daily.
 
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:33:01.741319,0.0
-5,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:33:14.457874,1.0
-6,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:33:27.188948,1.0
-7,"Don't forget to monitor your healthy eating.
+How do you do it?
+. The simplest way is to drink just 3 cups of drinking water a day. It is also a good idea to reduce your intake",suggestion,water intake,Y,2025-02-19,22:58:21.699601
+3,"Try to improve your healthy eating by using this simple, yet effective meal plan.
 
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:33:37.134761,0.0
-8,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:33:46.550519,0.0
-9,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:33:55.425722,0.0
-10,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:34:12.302449,1.0
-11,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:34:23.113377,1.0
-12,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:34:34.118077,1.0
-13,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:34:48.834181,0.0
-14,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:34:59.730706,1.0
-15,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:35:09.740345,1.0
-16,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:35:41.103360,0.0
-17,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:35:31.754768,0.0
-18,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:35:51.193914,0.0
-19,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:36:01.134498,1.0
-20,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:36:11.054665,1.0
-21,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:40:01.988790,0.0
-22,"Don't forget to monitor your water intake.
-
-If you're running low on water, try reducing your amount of alcohol, sugar, and other saturated fat. In fact, many people will find that consuming less alcohol and/or sugar may actually",reminder,water intake,Y,2025-02-19,22:39:48.500739,4.0
-23,"Don't forget to monitor your healthy eating.
-
-How to Avoid Dieters' Nerves
-, Dieter's Nerve
-:
- (1) Avoid foods that can cause an increase in your body's natural hormones, especially the production of",reminder,healthy eating,N,2025-02-19,22:40:20.259968,6.0
-24,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:43:10.916882,
-25,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
+Why it works
+, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:58:35.264498
+4,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:58:47.441464
+5,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
 
 When to Try
 …
- I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:44:40.495990,
-26,"Try to improve your healthy eating by using this simple, yet effective meal plan.
-
-Why it works
-, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:44:56.141450,
-27,"By maintaining healthy eating, you'll feel better.
-
-Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,22:45:09.669439,
-28,"Great job with your water intake!
-
-
-The water is the key.
-
-So this is where we stand.
-
-:)",praise,water intake,Y,2025-02-19,22:45:21.861870,
-29,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:45:34.401193,
-30,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
-
-When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,22:45:50.537285,
-31,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
-
-For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,22:46:06.250210,
-32,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
-
-When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,22:46:19.368291,
-33,"Try to improve your meal planning by combining it with food preparation and nutrition information.
+ I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:59:00.151651
+6,"Try to improve your meal planning by combining it with food preparation and nutrition information.
 
 Nutrition Information
-, please read the Nutrition Information for each food before you begin your plan. All information on your menu may be outdated, outdated or inaccurate.",suggestion,meal planning,N,2025-02-19,22:46:33.761021,
-34,"By maintaining healthy eating, you'll feel better.
+, please read the Nutrition Information for each food before you begin your plan. All information on your menu may be outdated, outdated or inaccurate.",suggestion,meal planning,N,2025-02-19,22:59:15.837179
+7,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
 
-Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,22:46:47.312927,
-35,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
+When to Try
+…
+ I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:59:29.275399
+8,"Try to improve your healthy eating by using this simple, yet effective meal plan.
 
-When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,22:47:01.796667,
-36,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
-
-For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,22:47:13.387179,
-37,"Don't forget to monitor your healthy eating.
-
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:47:26.669282,
-38,"Great job with your portion control!
+Why it works
+, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:59:41.565692
+9,"Great job with your portion control!
 
 -Your entire supply of alcohol will be sent out to all customers!
 
@@ -104,65 +35,149 @@ This recipe has been the perfect companion for a healthy, low carb, gluten-free 
 How to Use:
 . . . Use the following to get to your order.
  and
-, Use any other items",praise,portion control,Y,2025-02-19,22:47:40.871180,
-39,"By maintaining healthy eating, you'll feel better.
+, Use any other items",praise,portion control,Y,2025-02-19,22:59:53.042790
+10,"Don't forget to monitor your healthy eating.
 
-Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,22:47:52.854387,
-40,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:48:04.968050,
-41,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,22:48:16.915384,
-42,"Try to improve your healthy eating by using this simple, yet effective meal plan.
+This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,23:00:04.796987
+11,"Try to improve your water intake by keeping your body's water balance low and to help you achieve optimal water retention.
 
-Why it works
-, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:48:28.782825,
-43,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
+If you have a low or no water requirement, try to maintain a high water level. If you are at a moderate water",suggestion,water intake,Y,2025-02-19,23:00:15.460216
+12,"Try to improve your water intake by keeping your body's water balance low and to help you achieve optimal water retention.
 
-When to Try
-…
- I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:48:41.221616,
-44,"Don't forget to monitor your healthy eating.
+If you have a low or no water requirement, try to maintain a high water level. If you are at a moderate water",suggestion,water intake,Y,2025-02-19,23:00:24.897702
+13,"By maintaining healthy eating, you'll feel better. The best part is that you won't be concerned about the consequences.
 
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,22:48:53.131672,
-45,"Try to improve your healthy eating by using this simple, yet effective meal plan.
+You'll still be in a good mood and can feel calm. You can also relax. And you don't need to",reward,healthy eating,N,2025-02-19,23:00:35.947235
+14,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
 
-Why it works
-, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:49:04.509834,
-46,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
-
-For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,22:49:15.039316,
-47,"Great job with your water intake!
+When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,23:00:48.426442
+15,"Great job with your water intake!
 
 
 The water is the key.
 
 So this is where we stand.
 
-:)",praise,water intake,Y,2025-02-19,22:49:25.584945,
-48,"Try to improve your healthy eating by using this simple, yet effective meal plan.
+:)",praise,water intake,Y,2025-02-19,23:00:58.344656
+16,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,23:01:12.934198
+17,"Try to improve your water intake by taking your intake into account when making your health and lifestyle decisions.
 
-Why it works
-, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,22:49:38.766508,
-49,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
+How can I help my family get the best care for me?
+ ""I've had a great life. I've been a good mom",suggestion,water intake,Y,2025-02-19,23:01:23.461072
+18,"Great job with your portion control!
 
-When to Try
-…
- I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:49:52.112321,
-50,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,22:50:02.918179,
-51,"Try to improve your water intake by drinking a limited amount of water daily.
+-Your entire supply of alcohol will be sent out to all customers!
+
+
+How to Use:
+. . . Use the following to get to your order.
+ and
+, Use any other items",praise,portion control,Y,2025-02-19,23:01:35.503660
+19,"By maintaining healthy eating, you'll feel better.
+
+Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,23:01:46.370767
+20,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
+
+For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,23:01:57.337020
+21,"By maintaining healthy eating, you'll feel better. The best part is that you won't be concerned about the consequences.
+
+You'll still be in a good mood and can feel calm. You can also relax. And you don't need to",reward,healthy eating,N,2025-02-19,23:02:08.607793
+22,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,23:02:18.794518
+23,"Try to improve your water intake by drinking a limited amount of water daily.
 
 How do you do it?
-. The simplest way is to drink just 3 cups of drinking water a day. It is also a good idea to reduce your intake",suggestion,water intake,Y,2025-02-19,22:50:19.120913,
-52,"Try to improve your meal planning by combining it with food preparation and nutrition information.
+. The simplest way is to drink just 3 cups of drinking water a day. It is also a good idea to reduce your intake",suggestion,water intake,Y,2025-02-19,23:02:31.191860
+24,"Great job with your portion control!
+
+-Your entire supply of alcohol will be sent out to all customers!
+
+
+How to Use:
+. . . Use the following to get to your order.
+ and
+, Use any other items",praise,portion control,Y,2025-02-19,23:02:40.923738
+25,"Try to improve your water intake by taking your intake into account when making your health and lifestyle decisions.
+
+How can I help my family get the best care for me?
+ ""I've had a great life. I've been a good mom",suggestion,water intake,Y,2025-02-19,23:02:50.257657
+26,"Try to improve your water intake by drinking a limited amount of water daily.
+
+How do you do it?
+. The simplest way is to drink just 3 cups of drinking water a day. It is also a good idea to reduce your intake",suggestion,water intake,Y,2025-02-19,23:02:59.634261
+27,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,23:03:13.451276
+28,"By maintaining meal planning, you'll feel better. This is not only for those who are in the mood for a good meal, but also for people who need a break from eating and who want to take a few days off to recharge their batteries.",reward,meal planning,N,2025-02-19,23:03:26.325170
+29,"Try to improve your water intake by drinking a limited amount of water daily.
+
+How do you do it?
+. The simplest way is to drink just 3 cups of drinking water a day. It is also a good idea to reduce your intake",suggestion,water intake,Y,2025-02-19,23:03:37.187695
+30,"Try to improve your water intake by keeping your body's water balance low and to help you achieve optimal water retention.
+
+If you have a low or no water requirement, try to maintain a high water level. If you are at a moderate water",suggestion,water intake,Y,2025-02-19,23:03:49.501123
+31,"By maintaining healthy eating, you'll feel better.
+
+Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,23:04:06.318166
+32,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
+
+For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,23:04:17.148399
+33,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,23:04:27.148851
+34,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
+
+When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,23:04:37.952166
+35,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
+
+When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,23:04:49.074491
+36,"Try to improve your water intake by taking your intake into account when making your health and lifestyle decisions.
+
+How can I help my family get the best care for me?
+ ""I've had a great life. I've been a good mom",suggestion,water intake,Y,2025-02-19,23:05:00.507710
+37,"By maintaining healthy eating, you'll feel better.
+
+Your body may also benefit from a lot of other things. We might also love that you can get more out of a diet by eating a variety of foods that are good for you. You",reward,healthy eating,N,2025-02-19,23:05:10.269817
+38,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
+
+For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,23:05:20.927818
+39,"Try to improve your meal planning by making quick and easy meals that are easy to prepare, fast and affordable for your family. Make sure you are aware of the different types of meal options available and how much money you will be spending to get them.",suggestion,meal planning,N,2025-02-19,23:05:31.607780
+40,"Don't forget to monitor your healthy eating.
+
+This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,N,2025-02-19,23:05:41.999011
+41,"By maintaining portion control, you'll feel better.
+
+The following table shows the percentage of variance for the following variables in each of the four time periods. The first three numbers are based on the variance of all of these variables. All of them",reward,portion control,Y,2025-02-19,23:05:52.931500
+42,"Try to improve your water intake by taking your intake into account when making your health and lifestyle decisions.
+
+How can I help my family get the best care for me?
+ ""I've had a great life. I've been a good mom",suggestion,water intake,Y,2025-02-19,23:06:02.954439
+43,"Try to improve your healthy eating by using this simple, yet effective meal plan.
+
+Why it works
+, you'll notice that it's very easy to eat and maintain a healthy weight. The only thing you have to do is take a break",suggestion,healthy eating,N,2025-02-19,23:06:14.287160
+44,"Try to improve your portion control by increasing your intake of sodium, potassium, and chloride. You will need to use your body's own potassium.
+
+For example, you may want to eat a low-fat diet. But you might not want",suggestion,portion control,Y,2025-02-19,23:06:25.103564
+45,"By maintaining portion control, you'll feel better.
+
+The following table shows the percentage of variance for the following variables in each of the four time periods. The first three numbers are based on the variance of all of these variables. All of them",reward,portion control,Y,2025-02-19,23:06:41.106426
+46,"Great job with your portion control!
+
+-Your entire supply of alcohol will be sent out to all customers!
+
+
+How to Use:
+. . . Use the following to get to your order.
+ and
+, Use any other items",praise,portion control,Y,2025-02-19,23:06:50.997520
+47,"Try to improve your meal planning by combining it with food preparation and nutrition information.
 
 Nutrition Information
-, please read the Nutrition Information for each food before you begin your plan. All information on your menu may be outdated, outdated or inaccurate.",suggestion,meal planning,N,2025-02-19,22:50:29.597361,
-53,"By maintaining healthy eating, you'll feel better. The best part is that you won't be concerned about the consequences.
-
-You'll still be in a good mood and can feel calm. You can also relax. And you don't need to",reward,healthy eating,N,2025-02-19,22:50:41.619863,
-54,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
+, please read the Nutrition Information for each food before you begin your plan. All information on your menu may be outdated, outdated or inaccurate.",suggestion,meal planning,N,2025-02-19,23:07:01.536057
+48,"Try to improve your portion control by using less water and using a larger amount of carbohydrates.
 
 When to Try
 …
- I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,22:50:55.301716,
-55,"Don't forget to monitor your healthy eating.
+ I've been using an 8 oz bottle of this liquid for about 30 days now. I love the flavor of it.",suggestion,portion control,Y,2025-02-19,23:07:14.604468
+49,"By maintaining portion control, you'll feel better.
 
-This recipe has been the perfect companion for a healthy, low carb, gluten-free diet.",reminder,healthy eating,,,,
+The following table shows the percentage of variance for the following variables in each of the four time periods. The first three numbers are based on the variance of all of these variables. All of them",reward,portion control,Y,2025-02-19,23:07:28.361347
+50,"Don't forget to monitor your portion control. If you want to try out something different, it's very important to have at least one of your body's components.
+
+When you have a set number of portions, you'll notice a big difference",reminder,portion control,Y,2025-02-19,23:07:38.629394

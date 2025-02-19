@@ -82,39 +82,48 @@ def process_request(request):
     activities = ["water intake", "portion control", "healthy eating", "meal planning"]
 
     if invoke_type == 2:
-        # Get last answered question to learn
         if not user_data.empty:
             last_row = user_data.iloc[-1]
+            last_question_id = last_row["id"]
+            last_message = last_row["message"]
             last_type = last_row["persuasive_type"]
             last_activity = last_row["activity"]
-        else:
-            last_type, last_activity = "praise", "water intake"  # Default values
+            last_answer = last_row["yesOrNo"]
 
-        # Select next question based on past user interactions
+            # If the last question is unanswered, return it
+            if pd.isna(last_answer) or last_answer == "":
+                return return_json(200, last_message, last_question_id, last_type, last_activity)
+
+        # If last question was answered, proceed with selecting a new question
+        last_type = "praise" if user_data.empty else last_row["persuasive_type"]
+        last_activity = "water intake" if user_data.empty else last_row["activity"]
+
         state = [persuasive_types.index(last_type), activities.index(last_activity)]
         action = ppo_agent.select_action(state)
 
         selected_message = messages_df.iloc[action % len(messages_df)]
         question_id = len(user_data) + 1
-        
-        new_entry = pd.DataFrame([[question_id, selected_message["message"], selected_message["persuasive_type"], selected_message["activity"], "", "", ""]],
-                                 columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
+
+        new_entry = pd.DataFrame(
+            [[question_id, selected_message["message"], selected_message["persuasive_type"], selected_message["activity"], "", "", ""]],
+            columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"]
+        )
         user_data = pd.concat([user_data, new_entry], ignore_index=True)
         user_data.to_csv(f"./documents/userPath/{user_id}-user.csv", index=False)
 
-        return return_json(2, selected_message["message"], question_id, selected_message["persuasive_type"], selected_message["activity"])
-    
+        return return_json(200, selected_message["message"], question_id, selected_message["persuasive_type"], selected_message["activity"])
+
     elif invoke_type == 3:
         if question_id is None:
-            return return_json(3, "Question ID is required")
+            return return_json(400, "Question ID is required")
         
         question_answering = user_data[user_data["id"].astype(str) == str(question_id)]
         if question_answering.empty:
-            return return_json(3, "Failed: Question ID not found.")
+            return return_json(400, "Failed: Question ID not found.")
         
         question_answered = question_answering.iloc[0]["yesOrNo"]
         if pd.notna(question_answered) and question_answered != "":
-            return return_json(3, "Failed: question ID already answered.")
+            return return_json(400, "Failed: question ID already answered.")
         
         gen_answer = "Y" if answer else "N"
         timestamp = datetime.datetime.now()
@@ -131,13 +140,13 @@ def process_request(request):
         reward = 1 if answer == "Y" else -1
         ppo_agent.update_policy(state, action, reward)
 
-        return return_json(3, "Success")
+        return return_json(200, "Success")
     
-    return return_json(3, "Invalid invoke_type")
+    return return_json(400, "Invalid invoke_type")
 
 # Format JSON response
-def return_json(response_type, response, question_id=None, question_type=None, activity=None):
-    output = {"response_type": response_type, "response": response}
+def return_json(status, response, question_id=None, question_type=None, activity=None):
+    output = {"status": status, "response": response}
     if question_id is not None:
         output["questionId"] = question_id
         output["questionType"] = question_type
@@ -149,5 +158,5 @@ if __name__ == "__main__":
     request = read_input()
     response = process_request(request)
     if not response:
-        response = json.dumps({"response_type": "error", "response": "No response from script"})
+        response = json.dumps({"status": 500, "response": "No response from script"})
     print(response)
