@@ -4,113 +4,150 @@ import pandas as pd
 import random
 import datetime
 import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
 
-# Read API input (JSON format)
+# Define the MLP model (neural network)
+class MLP(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(MLP, self).__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+# Define PPO agent
+class PPOAgent:
+    def __init__(self, state_size, action_size, hidden_size=64):
+        self.model = MLP(state_size, hidden_size, action_size)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
+        self.gamma = 0.99  # Discount factor
+        self.epsilon = 0.2  # Clipping factor for PPO
+
+    def select_action(self, state):
+        state_tensor = torch.FloatTensor(state).unsqueeze(0)
+        logits = self.model(state_tensor)
+        action_probs = torch.softmax(logits, dim=-1)
+        action = torch.multinomial(action_probs, 1).item()
+        return action
+
+    def update_policy(self, state, action, reward):
+        state_tensor = torch.FloatTensor(state).unsqueeze(0)
+        action_tensor = torch.tensor(action).unsqueeze(0)
+        reward_tensor = torch.tensor(reward).unsqueeze(0)
+
+        logits = self.model(state_tensor)
+        action_probs = torch.softmax(logits, dim=-1)
+        action_prob = action_probs[0, action_tensor]
+        loss = -torch.log(action_prob) * reward_tensor
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+# Initialize PPO agent
+state_size = 2  # Two features: persuasive_type and activity
+action_size = 16  # Two possible actions (question selections)
+ppo_agent = PPOAgent(state_size, action_size)
+
+# Read API input
 def read_input():
     input_data = sys.stdin.read()
     return json.loads(input_data)
 
-# Load or create user data
+# Load user data
 def get_user_data(user_id):
-    user_file = f".\\documents\\userPath\\{user_id}-user.csv"
+    user_file = f"./documents/userPath/{user_id}-user.csv"
     if os.path.exists(user_file):
         return pd.read_csv(user_file)
     else:
-        return pd.DataFrame(columns=["id", "message", "persuasive_type", "yesOrNo", "Date", "Time"])
+        return pd.DataFrame(columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
 
-
-
-# Process API request
-# Process API request
+# Process request
 def process_request(request):
     invoke_type = request.get("invoke_type")
     user_id = request.get("userId")
     answer = request.get("answer", "")
     question_id = request.get("questionId", None)
-    pType1 = request.get("pType1", "")
-    pType2 = request.get("pType2", "")
 
-    messages_df = pd.read_csv(r".\documents\messagePath\message.csv")  # Fix path
+    messages_df = pd.read_csv("./documents/messagePath/message.csv")
     user_data = get_user_data(user_id)
 
-    # CASE 2: Question fetching
+    persuasive_types = ["praise", "reminder", "suggestion", "reward"]
+    activities = ["water intake", "portion control", "healthy eating", "meal planning"]
+
     if invoke_type == 2:
-        if not pType1 or not pType2:
-            return return_json(1, "Please enter two preferred message types.")
+        # Get last answered question to learn
+        if not user_data.empty:
+            last_row = user_data.iloc[-1]
+            last_type = last_row["persuasive_type"]
+            last_activity = last_row["activity"]
+        else:
+            last_type, last_activity = "praise", "water intake"  # Default values
+
+        # Select next question based on past user interactions
+        state = [persuasive_types.index(last_type), activities.index(last_activity)]
+        action = ppo_agent.select_action(state)
+
+        selected_message = messages_df.iloc[action % len(messages_df)]
+        question_id = len(user_data) + 1
         
-        profile_row = [pType1, pType2]
-        
-        first_preference = profile_row[0]
-        second_preference = profile_row[1]
-
-        # Occasionally explore a new message type (20% chance)
-        explore = random.random() < 0.2
-        if explore:
-            explore_type = random.choice([t for t in messages_df["persuasive_type"].unique() if t not in [first_preference, second_preference]])
-            second_preference = explore_type
-
-        # Select a random message
-        filtered_messages = messages_df[messages_df["persuasive_type"].isin([first_preference, second_preference])]
-        if filtered_messages.empty:
-            return return_json(3, "No messages available for your preferences.")
-
-        random_message = filtered_messages.sample(n=1).iloc[0]
-        question_id = len(user_data) + 1  # Unique question ID
-
-        # Save the asked question in user data (without answer)
-        new_entry = pd.DataFrame([[question_id, random_message["message"], random_message["persuasive_type"], "", "", ""]], 
-                                 columns=["id", "message", "persuasive_type", "yesOrNo", "Date", "Time"])
+        new_entry = pd.DataFrame([[question_id, selected_message["message"], selected_message["persuasive_type"], selected_message["activity"], "", "", ""]],
+                                 columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
         user_data = pd.concat([user_data, new_entry], ignore_index=True)
-        user_data.to_csv(f".\\documents\\userPath\\{user_id}-user.csv", index=False)
+        user_data.to_csv(f"./documents/userPath/{user_id}-user.csv", index=False)
 
-        return return_json(2, random_message["message"], question_id)
-
-    # CASE 3: Update user answer in userId-user.csv
-    # CASE 3: Update user answer in userId-user.csv
+        return return_json(2, selected_message["message"], question_id, selected_message["persuasive_type"], selected_message["activity"])
+    
     elif invoke_type == 3:
         if question_id is None:
             return return_json(3, "Question ID is required")
-
-        # Ensure question_id exists in the user data
+        
         question_answering = user_data[user_data["id"].astype(str) == str(question_id)]
-
-        # Check if the DataFrame is empty (meaning question_id was not found)
         if question_answering.empty:
             return return_json(3, "Failed: Question ID not found.")
-
-        # Get the answer if it exists
+        
         question_answered = question_answering.iloc[0]["yesOrNo"]
         if pd.notna(question_answered) and question_answered != "":
             return return_json(3, "Failed: question ID already answered.")
-
-        # Update the response
+        
         gen_answer = "Y" if answer else "N"
         timestamp = datetime.datetime.now()
         user_data.loc[user_data["id"] == question_id, ["yesOrNo", "Date", "Time"]] = [gen_answer, timestamp.date(), timestamp.time()]
-        user_data.to_csv(f".\\documents\\userPath\\{user_id}-user.csv", index=False)
+        user_data.to_csv(f"./documents/userPath/{user_id}-user.csv", index=False)
+        
+        # Get last known state for updating policy
+        last_row = user_data.iloc[-1]
+        last_type = last_row["persuasive_type"]
+        last_activity = last_row["activity"]
+        state = [persuasive_types.index(last_type), activities.index(last_activity)]
+        action = persuasive_types.index(last_type) * len(activities) + activities.index(last_activity)
+        
+        reward = 1 if answer == "Y" else -1
+        ppo_agent.update_policy(state, action, reward)
 
         return return_json(3, "Success")
-
-
+    
     return return_json(3, "Invalid invoke_type")
 
-# Function to format JSON response
-def return_json(response_type, response, question_id=None):
-    output = {
-        "response_type": response_type,
-        "response": response
-    }
+# Format JSON response
+def return_json(response_type, response, question_id=None, question_type=None, activity=None):
+    output = {"response_type": response_type, "response": response}
     if question_id is not None:
         output["questionId"] = question_id
-
+        output["questionType"] = question_type
+        output["activity"] = activity
     return json.dumps(output)
 
 # Run the function
 if __name__ == "__main__":
     request = read_input()
     response = process_request(request)
-    # Unxpected Json Error
     if not response:
         response = json.dumps({"response_type": "error", "response": "No response from script"})
-    
     print(response)
