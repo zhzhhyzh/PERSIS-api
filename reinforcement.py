@@ -50,9 +50,9 @@ class PPOAgent:
         loss.backward()
         self.optimizer.step()
 
-# Initialize PPO agent
-state_size = 2  # Two features: persuasive_type and activity
-action_size = 16  # Two possible actions (question selections)
+# Initialize for PPO agent
+state_size = 2  # Features type: persuasive and activity
+action_size = 16  # Possible combination goes here
 ppo_agent = PPOAgent(state_size, action_size)
 
 # Read API input
@@ -153,7 +153,6 @@ def return_json(status, response, question_id=None, question_type=None, activity
         output["activity"] = activity
     return json.dumps(output)
 
-# Run the function
 if __name__ == "__main__":
     request = read_input()
     response = process_request(request)
