@@ -26,7 +26,7 @@ class PPOAgent:
     def __init__(self, state_size, action_size, hidden_size=64):
         self.model = MLP(state_size, hidden_size, action_size)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
-        self.gamma = 0.99  # Discount factor
+        self.gamma = 0.9  # Discount factor
         self.epsilon = 0.2  # Clipping factor for PPO
 
     def select_action(self, state):
@@ -92,7 +92,8 @@ def process_request(request):
 
             # If the last question is unanswered, return it
             if pd.isna(last_answer) or last_answer == "":
-                return return_json(200, last_message, last_question_id, last_type, last_activity)
+                # print(last_message, last_question_id, last_type, last_activity)
+                return return_json(200, last_message, last_question_id.item(), last_type, last_activity)
 
         # If last question was answered, proceed with selecting a new question
         last_type = "praise" if user_data.empty else last_row["persuasive_type"]

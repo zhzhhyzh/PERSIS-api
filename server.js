@@ -9,72 +9,55 @@ app.use(express.json());
 const user = db.user;
 async function runPythonProcess(data, res) {
     try {
-        // Await the promise for userFind
+        
         const userFind = await user.findOne({
             where: {
                 userId: data.userId
-            }, 
-            raw: true, 
-            attributes: ['pType1', 'pType2']
+            },
+            raw: true,
+            attributes: ['userName']
         });
 
         // Handle user not found scenario
-        if (!userFind || _.isEmpty(userFind.pType1) || _.isEmpty(userFind.pType2)) {
-            if (data.invoke_type === 1) {
-                const preferenceUpdate = {
-                    pType1: data.answer[0],
-                    pType2: data.answer[1]
-                };
-
-                // Update user preferences
-                await user.update(preferenceUpdate, {
-                    where: {
-                        userId: data.userId
-                    },
-                    returning: true,
-                    plain: true
-                });
-            } else {
-                return res.status(404).json({ response_type: 3, response: "usernotfound" });
-            }
-        } else {
-            data.pType1 = userFind.pType1;
-            data.pType2 = userFind.pType2;
-
-            const pythonProcess = spawn("python", ["reinforcement.py"]);
-
-            pythonProcess.stdin.write(JSON.stringify(data));
-            pythonProcess.stdin.end();
-
-            let responseData = "";
-
-            pythonProcess.stdout.on("data", (chunk) => {
-                responseData += chunk.toString(); // Collect data
-            });
-
-            pythonProcess.stderr.on("data", (data) => {
-                console.error("Python Error:", data.toString());
-            });
-
-            pythonProcess.on("close", (code) => {
-                if (!responseData.trim()) {
-                    console.error("No response received from Python script.");
-                    return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
-                }
-
-                try {
-                    const jsonResponse = JSON.parse(responseData.trim()); // Ensure complete JSON
-                    return res.json(jsonResponse);
-                } catch (error) {
-                    console.error("JSON Parsing Error:", error);
-                    return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
-                }
-            });
+        if (!userFind || _.isEmpty(userFind.userName)) {
+            return res.status(400).json({  response: "usernotfound" });
         }
+
+
+        const pythonProcess = spawn("python", ["reinforcement.py"]);
+
+        pythonProcess.stdin.write(JSON.stringify(data));
+        pythonProcess.stdin.end();
+
+        let responseData = "";
+
+        pythonProcess.stdout.on("data", (chunk) => {
+            responseData += chunk.toString(); // Collect data
+        });
+
+        pythonProcess.stderr.on("data", (data) => {
+            console.error("Python Error:", data.toString());
+        });
+
+        pythonProcess.on("close", (code) => {
+            if (!responseData.trim()) {
+                console.error("No response received from Python script.");
+                return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
+            }
+
+            try {
+                const jsonResponse = JSON.parse(responseData.trim()); // Ensure complete JSON
+                return res.json(jsonResponse);
+            } catch (error) {
+                console.error("JSON Parsing Error:", error);
+                return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
+            }
+        });
+
 
     } catch (error) {
         console.error("Error in processing:", error);
-        return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
+        return res.status(500).json({  response: "UnexpectedError" });
     }
 }
 
