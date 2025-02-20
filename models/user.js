@@ -10,16 +10,16 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(255),
             allowNull: false,
         },
-        pType1: {
-            type: Sequelize.STRING(255),
-            allowNull: false
-            // Preferencce type 1
-        },
-        pType2: {
-            type: Sequelize.STRING(255),
-            allowNull: false
-            // Preference type 2
-        },
+        // pType1: {
+        //     type: Sequelize.STRING(255),
+        //     allowNull: false
+        //     // Preferencce type 1
+        // },
+        // pType2: {
+        //     type: Sequelize.STRING(255),
+        //     allowNull: false
+        //     // Preference type 2
+        // },
         recordPath: {
             type: Sequelize.STRING(255),
             allowNull: false
