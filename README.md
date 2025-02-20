@@ -27,6 +27,12 @@ To start the application, run:
 npm run start
 ```
 
+## Test Algorithm
+Before run the test, do configs in test.py:
+```sh
+python test.py
+```
+
 ## Contributing
 Feel free to submit issues or pull requests to improve the project.
 
