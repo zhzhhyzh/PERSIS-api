@@ -83,8 +83,10 @@ app.post("/invoke", (req, res) => {
     runPythonProcess(req.body, res);
 });
 
+
+
 app.use(function (req, res, next) {
-    res.status(404).send("APINOTFOUND");
+    res.status(404).send("APINOTFOUND, This is an default API");
 });
 
 
@@ -97,7 +99,7 @@ db.sequelize.sync() // Ensure database sync
     .then(() => {
         console.log("Database synced successfully");
         app.listen(3000, () => {
-            console.log("Server running on port 3000");
+            console.log("Server running on http://localhost:3000/");
         });
     })
     .catch((err) => {
