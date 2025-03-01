@@ -5,7 +5,7 @@ import os
 import pickle
 
 # Load dataset
-file_path = ("./documents/messagePath/message.csv")
+file_path = 'message.csv'
 data = pd.read_csv(file_path)
 
 # Initialize Q-table
@@ -28,15 +28,55 @@ def initialize_q_table():
         q_table[(row['message'], row['persuasive_type'], row['activity'])] = 0  # Initialize Q-values to zero
 
 # Function to get next message based on Q-values
-def get_next_message():
-    global epsilon
-    if random.random() < epsilon:  # Exploration
-        message = random.choice(list(q_table.keys()))
-    else:  # Exploitation (choose best)
-        message = max(q_table, key=q_table.get)
+# def get_next_message():
+#     global epsilon
+#     if random.random() < epsilon:  # Exploration
+#         message = random.choice(list(q_table.keys()))
+#     else:  # Exploitation (choose best)
+#         top_n = 4  # Number of best options to consider
+#         sorted_messages = sorted(q_table.items(), key=lambda x: x[1], reverse=True)[:top_n]
+#         message = random.choice(sorted_messages)[0]  # Pick randomly from top 3
+        
     
+#     epsilon = max(0.01, epsilon * 0.99)  # Gradually decrease exploration rate
+#     return message
+def get_next_message(top_n_groups=4):
+    global epsilon
+    if random.random() < epsilon:  # Exploration: Randomly select a message
+        message = random.choice(list(q_table.keys()))
+    else:  # Exploitation: Choose from the top Q-value groups
+        # Step 1: Group messages by (persuasive_type, activity) and store max Q-value per group
+        message_groups = {}
+        for key, value in q_table.items():
+            _, persuasive_type, activity = key
+            if (persuasive_type, activity) not in message_groups:
+                message_groups[(persuasive_type, activity)] = []
+            message_groups[(persuasive_type, activity)].append((key, value))
+
+        # Step 2: Sort each group by Q-value (descending)
+        for group in message_groups.values():
+            group.sort(key=lambda x: x[1], reverse=True)  # Sort messages in each group by Q-value
+
+        # Step 3: Sort groups by their highest Q-value
+        sorted_groups = sorted(
+            message_groups.items(),
+            key=lambda item: max(item[1], key=lambda x: x[1])[1],  # Get the max Q-value from each group
+            reverse=True
+        )
+
+        # Step 4: Select the top 4 groups
+        selected_groups = sorted_groups[:top_n_groups]
+
+        # Step 5: Pick a random message from one of the selected groups
+        if selected_groups:
+            chosen_group = random.choice(selected_groups)[1]  # Get messages from one of the top groups
+            message = random.choice(chosen_group)[0]  # Pick a random message from that group
+        else:
+            message = random.choice(list(q_table.keys()))  # Fallback random choice
+
     epsilon = max(0.01, epsilon * 0.99)  # Gradually decrease exploration rate
     return message
+
 
 # Save user responses
 def save_responses(responses):
@@ -52,7 +92,7 @@ def save_responses(responses):
     print(f"Responses saved to {save_path}")
 
 # Reinforcement learning update
-def update_q_table(message, persuasive_type, activity, reward, learning_rate=0.1, gamma=0.9):
+def update_q_table(message, persuasive_type, activity, reward, learning_rate=0.001, gamma=0.99):
     key = (message, persuasive_type, activity)
     previous_value = q_table.get(key, 0)
     
