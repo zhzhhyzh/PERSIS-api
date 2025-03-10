@@ -24,7 +24,7 @@ async function runPythonProcess(data, res) {
         }
 
 
-        const pythonProcess = spawn("python", ["reinforcement.py"]);
+        const pythonProcess = spawn("python", ["./QL/app.py"]);
 
         pythonProcess.stdin.write(JSON.stringify(data));
         pythonProcess.stdin.end();
@@ -32,12 +32,16 @@ async function runPythonProcess(data, res) {
         let responseData = "";
 
         pythonProcess.stdout.on("data", (chunk) => {
-            responseData += chunk.toString(); // Collect data
+            console.log("Raw Python Response:", chunk.toString());
+            responseData += chunk.toString();
         });
+        
 
         pythonProcess.stderr.on("data", (data) => {
             console.error("Python Error:", data.toString());
         });
+
+        
 
         pythonProcess.on("close", (code) => {
             if (!responseData.trim()) {

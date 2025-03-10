@@ -97,7 +97,7 @@ def read_input():
 
 # Load user data
 def get_user_data(user_id):
-    user_file = f"./documents/userPath/{user_id}-user.csv"
+    user_file = f"../documents/userPath/{user_id}-user.csv"
     if os.path.exists(user_file):
         return pd.read_csv(user_file, dtype={"yesOrNo": str, "Date": str, "Time": str})
     else:
@@ -110,7 +110,7 @@ def process_request(request):
     answer = request.get("answer", "")
     question_id = request.get("questionId", None)
 
-    messages_df = pd.read_csv("./documents/messagePath/message.csv")
+    messages_df = pd.read_csv("../documents/messagePath/message.csv")
     user_data = get_user_data(user_id)
 
     persuasive_types = ["praise", "reminder", "suggestion", "reward"]
@@ -141,7 +141,7 @@ def process_request(request):
         ], columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
         
         user_data = pd.concat([user_data, new_entry], ignore_index=True)
-        user_data.to_csv(f"./documents/userPath/{user_id}-user.csv", index=False)
+        user_data.to_csv(f"../documents/userPath/{user_id}-user.csv", index=False)
 
         return return_json(200, selected_message["message"], question_id, selected_message["persuasive_type"], selected_message["activity"])
 
@@ -165,7 +165,7 @@ def process_request(request):
             str(timestamp.time())
         ]
         
-        user_data.to_csv(f"./documents/userPath/{user_id}-user.csv", index=False)
+        user_data.to_csv(f"../documents/userPath/{user_id}-user.csv", index=False)
         
         last_row = user_data.iloc[-1]
         last_type = last_row["persuasive_type"]

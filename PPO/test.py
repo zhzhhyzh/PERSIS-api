@@ -2,7 +2,7 @@ import pytest
 import json
 import pandas as pd
 import os
-from reinforcement import process_request
+from RL.app import process_request
 
 USER_ID = "3"
 ITERATIONS = 1000  # Number of test cycles
@@ -30,13 +30,13 @@ ALLOWED_COMBINATIONS = {
 }
 
 # File paths
-USER_FILE_PATH = f"./documents/userPath/{USER_ID}-user.csv"
-MESSAGE_FILE_PATH = "./documents/messagePath/message.csv"
+USER_FILE_PATH = f"../documents/userPath/{USER_ID}-user.csv"
+MESSAGE_FILE_PATH = "../documents/messagePath/message.csv"
 
 def setup_files():
     """Setup test files before running tests."""
-    if not os.path.exists("./documents/userPath"):
-        os.makedirs("./documents/userPath")
+    if not os.path.exists("../documents/userPath"):
+        os.makedirs("../documents/userPath")
 
     if not os.path.exists(MESSAGE_FILE_PATH):
         raise FileNotFoundError(f"Message file {MESSAGE_FILE_PATH} not found.")
@@ -98,4 +98,4 @@ def test_ppo_accuracy():
     assert accuracy > 90  # Ensure at least 90% accuracy for "Y" responses.
 
 if __name__ == "__main__":
-    pytest.main(["-v", "test.py"])
+    pytest.main(["-s", "test.py"])

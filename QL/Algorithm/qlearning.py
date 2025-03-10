@@ -5,7 +5,7 @@ import os
 import pickle
 
 # Load dataset
-file_path = 'message.csv'
+file_path = '../../documents/messagePath/message.csv'
 data = pd.read_csv(file_path)
 
 # Initialize Q-table

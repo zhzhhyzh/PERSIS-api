@@ -97,4 +97,4 @@ def test_q_learning_accuracy():
     assert accuracy > 90  # Ensure at least 90% accuracy for "Y" responses.
 
 if __name__ == "__main__":
-    pytest.main(["-s", "test2.py"])
+    pytest.main(["-s", "test1.py"])
