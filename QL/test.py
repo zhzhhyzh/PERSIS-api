@@ -3,7 +3,8 @@ import json
 import os
 import pandas as pd
 from app import process_request
-
+import matplotlib.pyplot as plt
+from sklearn.metrics import precision_score, recall_score, f1_score
 USER_ID = "8"
 ITERATIONS = 1000  # Number of test cycles
 
@@ -31,7 +32,7 @@ ALLOWED_COMBINATIONS = {
  
 USER_FILE_PATH = os.path.join(os.getcwd(), "documents", "userPath", f"{USER_ID}-user.csv")
 MESSAGE_FILE_PATH = "documents\\messagePath\\message.csv"
-
+GRAPH_PATH = os.path.join("documents", "qlearning", "metrics.png")
 def setup_files():
     """Setup test files before running tests."""
     os.makedirs("../documents/userPath", exist_ok=True)
@@ -47,6 +48,7 @@ def setup_files():
 def test_qlearning_accuracy():
     setup_files()
     yes_count, no_count = 0, 0
+    y_true, y_pred = [], []
     
     for _ in range(ITERATIONS):
         
@@ -66,6 +68,7 @@ def test_qlearning_accuracy():
 
         
         answer = (persuasive_type, activity) in ALLOWED_COMBINATIONS
+        y_true.append(1 if answer else 0)
 
         # # Answering the question
         answer_request = {
@@ -76,7 +79,7 @@ def test_qlearning_accuracy():
             
         }
         response = process_request(answer_request)
-      
+        y_pred.append(1)
         # Output the extracted values
         print(f"Question ID: {question_id}")
         print(f"Persuasive Type: {persuasive_type}")
@@ -88,6 +91,21 @@ def test_qlearning_accuracy():
             no_count += 1
 
     accuracy = (yes_count / (yes_count + no_count)) * 100 if (yes_count + no_count) > 0 else 0
+    precision = precision_score(y_true, y_pred, zero_division=0) * 100
+    recall = recall_score(y_true, y_pred, zero_division=0) * 100
+    f1 = f1_score(y_true, y_pred, zero_division=0) * 100
+    metrics = ["Accuracy", "Precision", "Recall", "F1 Score"]
+    values = [accuracy, precision, recall, f1]
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(metrics, values, color=["blue", "green", "orange", "red"])
+    plt.ylim(0, 100)
+    plt.ylabel("Percentage")
+    plt.title("Q-Learning Model Performance in 1000 Iterations")
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+    # Save the plot
+    plt.savefig(GRAPH_PATH)
     assert accuracy >90  
 if __name__ == "__main__":
     pytest.main(["-v","QL\\test.py"])
