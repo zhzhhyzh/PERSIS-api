@@ -5,8 +5,8 @@ import pandas as pd
 from app import process_request
 import matplotlib.pyplot as plt
 from sklearn.metrics import precision_score, recall_score, f1_score
-USER_ID = "8"
-ITERATIONS = 1000  # Number of test cycles
+USER_ID = "3"
+ITERATIONS = 1300  # Number of test cycles
 
 # Define specific {persuasive_type, activity} combinations that get "Y"
 ALLOWED_COMBINATIONS = {
@@ -14,10 +14,10 @@ ALLOWED_COMBINATIONS = {
     ("suggestion", "meal planning"),
     ("reward", "meal planning"),
      ("praise", "meal planning"),
-    # ("reminder", "water intake"),
-    # ("suggestion", "water intake"),
-    # ("reward", "water intake"),
-    # ("praise", "water intake"),
+    ("reminder", "water intake"),
+    ("suggestion", "water intake"),
+    ("reward", "water intake"),
+    ("praise", "water intake"),
     # ("reminder", "healthy eating"),
     # ("suggestion", "healthy eating"),
     # ("reward", "healthy eating"),
@@ -29,16 +29,14 @@ ALLOWED_COMBINATIONS = {
 }
 
 # File paths
- 
-USER_FILE_PATH = os.path.join(os.getcwd(), "documents", "userPath", f"{USER_ID}-user.csv")
-MESSAGE_FILE_PATH = "documents\\messagePath\\message.csv"
-GRAPH_PATH = os.path.join("documents", "qlearning", "metrics.png")
+BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), "documents"))
+
+USER_FILE_PATH = os.path.join(BASE_DIR, "userPath", f"{USER_ID}-user.csv")
+MESSAGE_FILE_PATH = os.path.join(BASE_DIR, "messagePath", "message.csv")
+
 def setup_files():
     """Setup test files before running tests."""
     os.makedirs("../documents/userPath", exist_ok=True)
-    
-    if not os.path.exists(MESSAGE_FILE_PATH):
-        raise FileNotFoundError(f"Message file {MESSAGE_FILE_PATH} not found.")
     
     if os.path.exists(USER_FILE_PATH):
         os.remove(USER_FILE_PATH)
@@ -49,12 +47,12 @@ def test_qlearning_accuracy():
     setup_files()
     yes_count, no_count = 0, 0
     y_true, y_pred = [], []
-    
     for _ in range(ITERATIONS):
-        
         response = process_request({"invoke_type": 2, "userId": USER_ID})
+
         # Open user file and extract latest row
-        file_path = os.path.join("documents", "userPath", f"{USER_ID}-user.csv")
+        file_path = os.path.join(BASE_DIR, "userPath", f"{USER_ID}-user.csv")
+
         if os.path.exists(file_path):
             user_data = pd.read_csv(file_path)
             latest_row = user_data.iloc[-1]
@@ -62,6 +60,8 @@ def test_qlearning_accuracy():
         else:
             print("User file not found.")
 
+        
+        print("7888\n")
         question_id = latest_row["id"]
         persuasive_type = latest_row["persuasive_type"].strip()
         activity = latest_row["activity"].strip()
@@ -104,8 +104,6 @@ def test_qlearning_accuracy():
     plt.title("Q-Learning Model Performance in 1000 Iterations")
     plt.grid(axis="y", linestyle="--", alpha=0.7)
 
-    # Save the plot
-    plt.savefig(GRAPH_PATH)
     assert accuracy >90  
 if __name__ == "__main__":
-    pytest.main(["-v","QL\\test.py"])
+    pytest.main(["-s","QL\\test.py"])

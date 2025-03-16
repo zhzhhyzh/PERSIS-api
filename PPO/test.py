@@ -2,10 +2,10 @@ import pytest
 import json
 import pandas as pd
 import os
-from RL.app import process_request
+from app import process_request
 
-USER_ID = "3"
-ITERATIONS = 1000  # Number of test cycles
+USER_ID = "4"
+ITERATIONS = 1300  # Number of test cycles
 
 # Define specific {persuasive_type, activity} combinations that get "Y"
 ALLOWED_COMBINATIONS = {
@@ -17,10 +17,10 @@ ALLOWED_COMBINATIONS = {
     ("suggestion", "water intake"),
     ("reward", "water intake"),
     ("praise", "water intake"),
-    ("reminder", "healthy eating"),
-    ("suggestion", "healthy eating"),
-    ("reward", "healthy eating"),
-    ("praise", "healthy eating"),
+    # ("reminder", "healthy eating"),
+    # ("suggestion", "healthy eating"),
+    # ("reward", "healthy eating"),
+    # ("praise", "healthy eating"),
     # ("reminder", "portion control"),
     # ("suggestion", "portion control"),
     # ("reward", "portion control"),

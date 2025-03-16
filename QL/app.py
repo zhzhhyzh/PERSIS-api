@@ -88,15 +88,18 @@ def update_q_table(message, persuasive_type, activity, reward, learning_rate=0.0
 
 # Load User Data
 def load_user_data(user_id):
-    file_path = os.path.join(os.getcwd(), "documents", "messagePath", "message.csv")
+    BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), "documents"))
+    file_path = os.path.join(BASE_DIR, "userPath", f"{user_id}-user.csv")  
     if not os.path.exists(file_path):
+        print("998/n")
         return pd.DataFrame(columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
     return pd.read_csv(file_path)
 
 # Generate Question (invoke_type == 2)
 def generate_question(user_id):
     user_data = load_user_data(user_id)
-    messages_df = pd.read_csv("../documents/messagePath/message.csv")
+    BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), "documents"))
+    messages_df = pd.read_csv(os.path.join(BASE_DIR, "messagePath", "message.csv"))
     
     if messages_df is None or messages_df.empty:
         return return_json(400, "Message database is empty or missing.")
@@ -115,9 +118,8 @@ def generate_question(user_id):
     ], columns=["id", "message", "persuasive_type", "activity", "yesOrNo", "Date", "Time"])
     
     user_data = pd.concat([user_data, new_entry], ignore_index=True)
-    output_dir = os.path.join("..", "documents", "userPath")
+    output_dir = os.path.join(BASE_DIR, "userPath")
     os.makedirs(output_dir, exist_ok=True)  
-
     file_path = os.path.join(output_dir, f"{user_id}-user.csv")
     user_data.to_csv(file_path, index=False)
 
@@ -142,7 +144,8 @@ def answer_question(user_id, question_id, answer):
     gen_answer = "Y" if answer else "N"
     timestamp = datetime.datetime.now()
     user_data.loc[user_data["id"] == question_id, ["yesOrNo", "Date", "Time"]] = [gen_answer, str(timestamp.date()), str(timestamp.time())]
-    user_data.to_csv(f"../documents/userPath/{user_id}-user.csv", index=False)
+    BASE_DIR = os.path.abspath(os.path.join(os.getcwd(), "documents"))
+    user_data.to_csv(os.path.join(BASE_DIR, "userPath", f"{user_id}-user.csv") ,index=False)
 
     # Update Q-table
     load_q_table()

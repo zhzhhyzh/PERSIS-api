@@ -4,10 +4,10 @@ import pandas as pd
 import os
 import pickle
 import random
-from app import get_next_message, update_q_table, initialize_q_table, save_q_table, load_q_table
+from qlearning import get_next_message, update_q_table, initialize_q_table, save_q_table, load_q_table
 
 USER_ID = "3"
-ITERATIONS = 1000  # Number of test cycles
+ITERATIONS = 1300  # Number of test cycles
 
 # Define specific {persuasive_type, activity} combinations that get "Y"
 ALLOWED_COMBINATIONS = {
@@ -19,10 +19,10 @@ ALLOWED_COMBINATIONS = {
     #("suggestion", "water intake"),
     ("reward", "water intake"),
     #("praise", "water intake"),
-    #("reminder", "healthy eating"),
+    ("reminder", "healthy eating"),
     #("suggestion", "healthy eating"),
     #("reward", "healthy eating"),
-    #("praise", "healthy eating"),
+    ("praise", "healthy eating"),
     #("reminder", "portion control"),
     #("suggestion", "portion control"),
     #("reward", "portion control"),
