@@ -152,7 +152,17 @@ def generate_question(user_id):
     if messages_df is None or messages_df.empty:
         return return_json(400, "Message database is empty or missing.")
 
-    
+    if not user_data.empty:
+            last_row = user_data.iloc[-1]
+            last_question_id = last_row["id"]
+            last_message = last_row["message"]
+            last_type = last_row["persuasive_type"]
+            last_activity = last_row["activity"]
+            last_answer = last_row["yesOrNo"]
+
+            if pd.isna(last_answer) or last_answer == "":
+                return return_json(200, last_message, last_question_id, last_type, last_activity)
+
     # Generate unique question ID
     question_id = len(user_data) + 1
     if str(question_id) == "1":
