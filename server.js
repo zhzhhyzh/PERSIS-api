@@ -1,15 +1,18 @@
 const express = require("express");
 const { spawn } = require("child_process");
 const db = require("./models")
+const passport = require('passport');      
+require('./config/passport')(passport);   
 const _ = require('lodash')
 const app = express();
-app.use(express.json());
 
+app.use(express.json());
+app.use(passport.initialize());
 //controller execution
 const user = db.user;
 async function runPythonProcess(data, res) {
     try {
-        
+
         const userFind = await user.findOne({
             where: {
                 userId: data.userId
@@ -20,7 +23,7 @@ async function runPythonProcess(data, res) {
 
         // Handle user not found scenario
         if (!userFind || _.isEmpty(userFind.userName)) {
-            return res.status(400).json({  response: "usernotfound" });
+            return res.status(400).json({ response: "usernotfound" });
         }
 
 
@@ -35,13 +38,13 @@ async function runPythonProcess(data, res) {
             console.log("Raw Python Response:", chunk.toString());
             responseData += chunk.toString();
         });
-        
+
 
         pythonProcess.stderr.on("data", (data) => {
             console.error("Python Error:", data.toString());
         });
 
-        
+
 
         pythonProcess.on("close", (code) => {
             if (!responseData.trim()) {
@@ -61,7 +64,7 @@ async function runPythonProcess(data, res) {
 
     } catch (error) {
         console.error("Error in processing:", error);
-        return res.status(500).json({  response: "UnexpectedError" });
+        return res.status(500).json({ response: "UnexpectedError" });
     }
 }
 
@@ -69,6 +72,10 @@ async function runPythonProcess(data, res) {
 app.post("/invoke", (req, res) => {
     runPythonProcess(req.body, res);
 });
+
+
+const userroutes = require("./routes/user");
+app.use('/api/user', userroutes);
 
 
 

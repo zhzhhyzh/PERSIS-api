@@ -2,13 +2,28 @@
 
 module.exports = (sequelize, Sequelize) => {
     const user = sequelize.define("user", {
-        userId: {
-            type: Sequelize.STRING(10),
+        username: {
+            type: Sequelize.STRING(255),
             allowNull: false
+            //Username
         },
-        userName: {
+        name: {
             type: Sequelize.STRING(255),
             allowNull: false,
+            //Real Name
+        },
+        password: {
+            type: Sequelize.STRING(255),
+            allowNull: false
+        },
+        age: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        gender: {
+            type: Sequelize.STRING(1),
+            allowNull: false
+            //Only Allow M - Male, F - Female
         },
         // pType1: {
         //     type: Sequelize.STRING(255),
@@ -30,7 +45,7 @@ module.exports = (sequelize, Sequelize) => {
             indexes: [
                 {
                     unique: true,
-                    fields: ['userId']
+                    fields: ['username']
                 }
             ]
         });
