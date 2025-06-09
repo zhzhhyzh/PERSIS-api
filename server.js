@@ -1,8 +1,8 @@
 const express = require("express");
 const { spawn } = require("child_process");
 const db = require("./models")
-const passport = require('passport');      
-require('./config/passport')(passport);   
+const passport = require('passport');
+require('./config/passport')(passport);
 const _ = require('lodash')
 const app = express();
 
@@ -93,7 +93,9 @@ db.sequelize.sync() // Ensure database sync
     .then(() => {
         console.log("Database synced successfully");
         app.listen(3000, () => {
+            console.log("==========================================");
             console.log("Server running on http://localhost:3000/");
+            console.log("==========================================");
         });
     })
     .catch((err) => {
