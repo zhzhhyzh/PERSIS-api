@@ -1,10 +1,16 @@
 {
-  
   "local": {
     "username": "root",
     "password": null,
     "database": "persis",
     "host": "127.0.0.1",
     "dialect": "mysql"
-  }  
+  },
+  "production": {
+    "username": "ucul3crpamcfktot",
+    "password": "Gqa0hWYDpF4e3JfAj9tJ",
+    "database": "byyvxfhfymacfxlukgio",
+    "host": "byyvxfhfymacfxlukgio-mysql.services.clever-cloud.com",
+    "dialect": "mysql"
+  }
 }
