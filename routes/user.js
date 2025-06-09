@@ -22,7 +22,7 @@ router.post('/change_password', authenticateRoute, user.change_password);
 // @route   POST api/user/create
 // @desc    create System Parameter
 // @access  Private
-router.post("/create", authenticateRoute, user.create);
+router.post("/create", user.create);
 
 
 
