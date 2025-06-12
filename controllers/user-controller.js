@@ -56,7 +56,7 @@ exports.login = async (req, res) => {
                                 where: {
                                     username: data.username
                                 }, raw: true
-                            }).then(lgnpf => {
+                            }).then(async lgnpf => {
                                 if (lgnpf) {
                                     let options = {
                                         pslgnsts: true,
@@ -66,26 +66,26 @@ exports.login = async (req, res) => {
                                     if (lgnpf.pslgnsts) {
                                         options.pslgidat = new Date();
                                     }
-                                    usrlgnpf.update(options, {
+                                    await usrlgnpf.update(options, {
                                         transaction: t,
                                         where: {
                                             id: lgnpf.id
                                         }
-                                    }).catch(err => {
+                                    }).catch(async err => {
                                         console.log(err);
-                                        t.rollback();
+                                        await t.rollback();
                                         return returnError(req, 500, "UNEXPECTEDERROR", res);
                                     });;
                                 } else {
-                                    usrlgnpf.create({
+                                    await usrlgnpf.create({
                                         username: data.username,
                                         pslgnsts: true,
                                         pslgidat: new Date(),
                                         pslgntkn: "Bearer " + token
                                     }
-                                    ).catch(err => {
+                                    ).catch(async err => {
                                         console.log(err);
-                                        t.rollback();
+                                        await t.rollback();
                                         return returnError(req, 500, "UNEXPECTEDERROR", res);
                                     });
                                 }
