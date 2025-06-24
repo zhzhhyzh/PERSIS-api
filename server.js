@@ -80,6 +80,9 @@ app.use('/api/user', userroutes);
 const invoke = require("./routes/invoke");
 app.use('/api/invoke', invoke);
 
+const download = require("./routes/download");
+app.use('/api/download', download);
+
 
 
 app.use(function (req, res, next) {
@@ -95,7 +98,7 @@ console.log("Server started=====>");
 db.sequelize.sync() // Ensure database sync
     .then(() => {
         console.log("Database synced successfully");
-        app.listen(3000, () => {
+        app.listen(3001, () => {
             console.log("==========================================");
             console.log("Server running on http://localhost:3000/");
             console.log("==========================================");

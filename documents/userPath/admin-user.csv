@@ -2,3 +2,6 @@ id,message,persuasive_type,activity,yesOrNo,Date,Time
 1,"Don't forget to monitor your healthy eating. You are going to lose weight by eating less.
 
 ""I know it's been a while, but there's so much I can do. And the one thing I'll tell you is that it",reminder,healthy eating,Y,2025-06-13,12:56:36.908294
+2,"By maintaining water intake, you'll feel better.
+
+It's not as if the water in your refrigerator can't be replaced, but it won't take much for it to become a problem. It will help you maintain a healthy water level and",reward,water intake,Y,2025-06-18,00:09:07.036957
