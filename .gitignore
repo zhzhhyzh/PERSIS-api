@@ -1,7 +1,7 @@
 /node_modules
-.pytest_cache
-__pycache__
-RL/__pycache__
-QL/__pycache__
-RL/.pytest_cache
-QL/.pytest_cache
+# .pytest_cache
+# __pycache__
+# RL/__pycache__
+# QL/__pycache__
+# RL/.pytest_cache
+# QL/.pytest_cache
