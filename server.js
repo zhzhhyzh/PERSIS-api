@@ -98,7 +98,7 @@ console.log("Server started=====>");
 db.sequelize.sync() // Ensure database sync
     .then(() => {
         console.log("Database synced successfully");
-        app.listen(3001, () => {
+        app.listen(3000, () => {
             console.log("==========================================");
             console.log("Server running on http://localhost:3000/");
             console.log("==========================================");
