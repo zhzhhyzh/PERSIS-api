@@ -5,3 +5,12 @@ id,message,persuasive_type,activity,yesOrNo,Date,Time
 2,"By maintaining water intake, you'll feel better.
 
 It's not as if the water in your refrigerator can't be replaced, but it won't take much for it to become a problem. It will help you maintain a healthy water level and",reward,water intake,Y,2025-06-18,00:09:07.036957
+3,"Don't forget to monitor your healthy eating. You are going to lose weight by eating less.
+
+""I know it's been a while, but there's so much I can do. And the one thing I'll tell you is that it",reminder,healthy eating,Y,2025-06-25,11:06:16.368506
+4,"Try to improve your healthy eating by using low-carb or ketogenic diets instead of traditional diets.
+
+There are many benefits to using an alternative to traditional dietary approaches. First, it's not that you should avoid foods containing processed or high-",suggestion,healthy eating,Y,2025-06-25,11:06:34.885780
+5,"Great job with your portion control!
+
+This is a great little app that has been used by hundreds of thousands of people all over the world. It is easy to use, you can see what type of meal your particular customers are eating and the",praise,portion control,,,

@@ -1,10 +1,18 @@
 const express = require("express");
 // const { spawn } = require("child_process");
 const db = require("./models")
+const cors = require("cors");
 const passport = require('passport');
 require('./config/passport')(passport);
 // const _ = require('lodash');
 const app = express();
+
+app.use(cors({
+  origin: '*', // or specific domain like 'http://localhost:5500'
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['api-key', 'Content-Type']
+}));
+app.options('*', cors());
 
 app.use(express.json());
 app.use(passport.initialize());
@@ -91,7 +99,7 @@ app.use(function (req, res, next) {
 
 
 
-console.log("Server started=====>");
+// console.log("Server started=====>");
 // app.listen(3000, () => {
 //     console.log("Server running on port 3000");
 // });

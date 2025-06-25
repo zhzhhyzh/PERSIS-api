@@ -14,7 +14,12 @@ const download = require("../controllers/download-controller");
 // @route   POST api/download/download
 // @desc    Run Python Process
 // @access  Public
-router.get('/download', authenticateRoute, download.download);
+router.get('/download', download.download);
+
+// @route   POST api/download/list
+// @desc    Run Python Process
+// @access  Public
+router.get('/list', download.list);
 
 
 // @route   POST api/download/download

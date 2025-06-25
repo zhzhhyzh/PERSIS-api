@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Persis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e3a59;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .controls label {
+            margin: 5px 0;
+        }
+
+        input[type="number"] {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 60px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #2e8bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #1c6edf;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>User File Manager</h1>
+
+        <div class="controls">
+            <button onclick="downloadZip()">Download All (ZIP)</button>
+            <label>
+                Search:
+                <input type="text" id="search" placeholder="filename..." oninput="loadFiles()" />
+            </label>
+
+            <label>
+                Page:
+                <input type="number" id="page" value="0" min="0" onchange="loadFiles()" />
+            </label>
+            <label>
+                Limit:
+                <input type="number" id="limit" value="10" min="1" onchange="loadFiles()" />
+            </label>
+        </div>
+
+        <table id="fileTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:3001/api";
+        const API_KEY = "c871651f-bdf3-4795-b826-cc3cfb80075a";
+
+        async function loadFiles() {
+            const page = document.getElementById('page').value;
+            const limit = document.getElementById('limit').value;
+            const search = document.getElementById('search').value;
+
+            const query = new URLSearchParams({
+                page,
+                limit,
+                ...(search && { search })
+            });
+
+            const res = await fetch(`${API_BASE}/download/list?${query.toString()}`, {
+                method: 'GET',
+                headers: {
+                    'api-key': API_KEY,
+                    'content-type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            const tbody = document.querySelector('#fileTable tbody');
+            tbody.innerHTML = '';
+
+            data.files.forEach(filename => {
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = filename;
+
+                const downloadCell = document.createElement('td');
+                const btn = document.createElement('button');
+                btn.textContent = "Download";
+                btn.onclick = () => {
+                    const nameOnly = filename.split('-')[0];
+                    window.location.href = `${API_BASE}/download/download?username=${nameOnly}`;
+                };
+                downloadCell.appendChild(btn);
+
+                row.appendChild(nameCell);
+                row.appendChild(downloadCell);
+                tbody.appendChild(row);
+            });
+        }
+
+        function downloadZip() {
+            window.location.href = `${API_BASE}/download/downloadZip`;
+        }
+
+        loadFiles();
+    </script>
+</body>
+
+</html>
