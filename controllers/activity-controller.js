@@ -177,9 +177,9 @@ exports.create = async (req, res) => {
     raw: true,
   });
 
-  // if (exist) {
-  //   return returnError(req, 400, { rDate: "RECORDEXIST" }, res);
-  // }
+  if (exist) {
+    return returnError(req, 400, { rDate: "RECORDEXIST" }, res);
+  }
   const aType = req.body.aType;
   const distance = req.body.distance;
   switch (req.body.aType) {
