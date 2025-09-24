@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 // const { spawn } = require("child_process");
 const db = require("./models")
-const cors = require("cors");
 const passport = require('passport');
 require('./config/passport')(passport);
 // const _ = require('lodash');
