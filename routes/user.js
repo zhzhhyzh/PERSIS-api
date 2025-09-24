@@ -16,7 +16,7 @@ router.post("/login", user.login);
 
 // @route   POST api/user/change-password
 // @desc    Update user Password
-// @access  Public
+// @access  Private
 router.post('/change_password', authenticateRoute, user.change_password);
 
 // @route   POST api/user/create

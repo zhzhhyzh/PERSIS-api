@@ -13,7 +13,7 @@ const invoke = require("../controllers/invoke-controller");
 
 // @route   POST api/invoke/runPythonProcess
 // @desc    Run Python Process
-// @access  Public
+// @access  Private
 router.post('/runPythonProcess', authenticateRoute, invoke.runPythonProcess);
 
 

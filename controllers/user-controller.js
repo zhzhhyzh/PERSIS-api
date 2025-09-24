@@ -244,16 +244,19 @@ exports.create = async (req, res) => {
 
 
 exports.detail = (req, res) => {
-    const usrnm = req.query.id ? req.query.id : '';
-    if (usrnm == '') return returnError(req, 500, "RECORDIDISREQUIRED", res);
+    // Get user ID from authenticated token instead of query parameter
+    const userId = req.user ? req.user.id : null;
+    if (!userId) return returnError(req, 500, "USERIDNOTFOUND", res);
+    
     user.findOne({
         where: {
-            username: usrnm
-        }, raw: true, attributes: [['id', 'username'], 'username', 'name', 'gender', 'age']
-    }).then(async usrunme => {
-        if (usrunme) {
-
-            return returnSuccess(200, usrunme, res);
+            id: userId
+        }, 
+        raw: true, 
+        attributes: ['id', 'username', 'name', 'gender', 'age']
+    }).then(async userData => {
+        if (userData) {
+            return returnSuccess(200, userData, res);
         } else return returnError(req, 500, "NORECORDFOUND", res);
     }).catch(err => {
         console.log(err);
