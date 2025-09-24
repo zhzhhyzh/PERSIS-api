@@ -1,54 +1,111 @@
-// User Profile
+// Activity
 
 module.exports = (sequelize, Sequelize) => {
-    const user = sequelize.define("user", {
-        username: {
-            type: Sequelize.STRING(255),
+    const activity = sequelize.define("activity", {
+        uuid: {
+            type: Sequelize.STRING(36),
             allowNull: false
             //Username
         },
-        name: {
-            type: Sequelize.STRING(255),
+        aType: {
+            type: Sequelize.STRING(10),
             allowNull: false,
-            //Real Name
+            //Response Type
         },
-        password: {
+        username: {
             type: Sequelize.STRING(255),
             allowNull: false
+            //Link to user file
         },
-        age: {
+        rDate: {
+            type: Sequelize.DATE,
+            allowNull: false,
+            defaultValue: new Date(),
+            // Response made date
+        },
+        distance: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false
+            // Distance in KM 
+        },
+        duration_sec: {
             type: Sequelize.INTEGER,
-            allowNull: false
+            defaultValue: 0,
+            // validate: {
+            //     min: 0,
+            //     max: 59
+            // }
+            //-838:59:59 to 838:59:59
         },
-        gender: {
-            type: Sequelize.STRING(1),
-            allowNull: false
-            //Only Allow M - Male, F - Female
+
+        duration_min: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0,
+            // validate: {
+            //     min: 0,
+            //     max: 59
+            // }
+            //-838:59:59 to 838:59:59
         },
-        // pType1: {
-        //     type: Sequelize.STRING(255),
-        //     allowNull: false
-        //     // Preferencce type 1
-        // },
-        // pType2: {
-        //     type: Sequelize.STRING(255),
-        //     allowNull: false
-        //     // Preference type 2
-        // },
-        recordPath: {
+        duration_hour: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0,
+            // validate: {
+            //     min: 0,
+            //     max: 838
+            // }
+            //-838:59:59 to 838:59:59
+        },
+        openq1: {
             type: Sequelize.STRING(255),
-            allowNull: false
-            // userId.csv
-        }
+            default: "",
+            //Any open question
+        },
+        openq2: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq3: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq4: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq5: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq6: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq7: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+        openq8: {
+            type: Sequelize.STRING(255),
+            default: "",
+            //Any open question
+        },
+
     }, { freezeTableName: true },
         {
             indexes: [
                 {
                     unique: true,
-                    fields: ['username']
+                    fields: ['uuid']
                 }
             ]
         });
 
-    return user;
+    return activity;
 };
