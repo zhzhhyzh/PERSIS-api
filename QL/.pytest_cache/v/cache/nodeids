@@ -1,0 +1,6 @@
+[
+  "test.py::test_q_learning_accuracy",
+  "test.py::test_qlearning_accuracy",
+  "test2.py::test_automated_question_answering",
+  "test2.py::test_model_performance"
+]
