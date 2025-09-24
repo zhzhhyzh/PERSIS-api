@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 // const { spawn } = require("child_process");
 const db = require("./models")
+const cors = require("cors");
 const passport = require('passport');
 require('./config/passport')(passport);
 // const _ = require('lodash');
@@ -90,6 +91,9 @@ app.use('/api/invoke', invoke);
 
 const stats = require("./routes/stats");
 app.use('/api/stats', stats);
+const download = require("./routes/download");
+app.use('/api/download', download);
+
 
 
 app.use(function (req, res, next) {
@@ -98,7 +102,7 @@ app.use(function (req, res, next) {
 
 
 
-console.log("Server started=====>");
+// console.log("Server started=====>");
 // app.listen(3000, () => {
 //     console.log("Server running on port 3000");
 // });
