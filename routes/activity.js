@@ -19,6 +19,12 @@ router.get("/detail", authenticateRoute, activity.findOne);
 router.get("/listMedal", authenticateRoute, activity.listMedal);
 
 
+// @route   GET api/activity/find-one
+// @desc    Find OTP Parameter
+// @access  Private
+router.get("/listTips", authenticateRoute, activity.listTips);
+
+
 // @route   GET api/activity/list
 // @desc    List OTP Parameter
 // @access  Private

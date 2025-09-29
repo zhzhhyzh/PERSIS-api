@@ -2,6 +2,9 @@
 const db = require("../models");
 const _ = require("lodash");
 const { v4: uuidv4 } = require("uuid");
+const fs = require('fs');
+const path = require('path');
+const csv = require('csv-parser');
 
 //Table
 const activity = db.activity;
@@ -491,3 +494,58 @@ exports.listMedal = async (req, res) => {
 //   }
 // };
 
+exports.listTips = async (req, res) => {
+  try {
+    const user = req.user.username;
+    const filename = path.resolve(`./documents/userPath/${user}-user.csv`);
+
+    if (!fs.existsSync(filename)) {
+      return returnSuccess(200, { total: 0, data: [] }, res);
+    }
+
+    const allMessages = new Set();
+    const filteredRows = [];
+
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(filename)
+        .pipe(csv())
+        .on('data', (row) => {
+          const message = row.message?.trim();
+          const type = row.persuasive_type?.toLowerCase();
+          const yes = row.yesOrNo?.toLowerCase();
+
+          if (type === 'suggestion' && yes === 'y' && message) {
+            if (!allMessages.has(message)) {
+              allMessages.add(message);
+              filteredRows.push({ message });
+            }
+          }
+        })
+        .on('end', resolve)
+        .on('error', reject);
+    });
+
+    // Get random 10-15 unique messages
+    const min = 10;
+    const max = 15;
+    const randomCount = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // Get that many from the bottom (or less if not enough)
+    const start = Math.max(filteredRows.length - randomCount, 0);
+
+    const last15 = filteredRows.slice(start);
+
+    return returnSuccess(
+      200,
+      {
+        total: filteredRows.length,
+        data: filteredRows,
+        extra: { file: "activity", key: ["message"] },
+      },
+      res
+    );
+  } catch (err) {
+    console.error("Error in listTips:", err);
+    return returnError(req, 500, "UNEXPECTEDERROR", res);
+  }
+};
