@@ -170,6 +170,7 @@ exports.create = async (req, res) => {
   const endDate = new Date(baseDate.getTime() + offsetMs);
   const exist = await activity.findOne({
     where: {
+      username: req.user.username,
       rDate: {
         [Op.between]: [startDate, endDate]
       }
