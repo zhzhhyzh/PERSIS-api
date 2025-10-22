@@ -88,6 +88,10 @@ app.use('/api/user', userroutes);
 const invoke = require("./routes/invoke");
 app.use('/api/invoke', invoke);
 
+
+const question = require("./routes/question");
+app.use('/api/question', question);
+
 const stats = require("./routes/stats");
 app.use('/api/stats', stats);
 const download = require("./routes/download");

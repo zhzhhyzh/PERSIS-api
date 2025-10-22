@@ -60,8 +60,6 @@ def test_qlearning_accuracy():
         else:
             print("User file not found.")
 
-        
-        print("7888\n")
         question_id = latest_row["id"]
         persuasive_type = latest_row["persuasive_type"].strip()
         activity = latest_row["activity"].strip()
