@@ -101,6 +101,10 @@ const activity = require("./routes/activity");
 app.use('/api/activity', activity);
 
 
+const mntlog = require("./routes/mntlog");
+app.use('/api/mntlog', mntlog);
+
+
 
 app.use(function (req, res, next) {
     res.status(404).send("APINOTFOUND, This is an default API");

@@ -119,13 +119,14 @@ exports.list = async (req, res) => {
   for (var i = 0; i < rows.length; i++) {
     let obj = rows[i];
 
-    obj.rDate = await common.formatDateTime(obj.rDate, "/");
+    obj.rDate = await common.formatDateTime(obj.rDate, "12","DD-MM-YYYY HH:mm:ss A");
     obj.distance = await common.formatDecimal(obj.distance);
 
     newRows.push(obj);
   }
+  await common.writeLog(req.user.username, `List Activity - ${count} counts`)
 
-  if (count > 0)
+  if (count > 0) {
     return returnSuccess(
       200,
       {
@@ -135,7 +136,11 @@ exports.list = async (req, res) => {
       },
       res
     );
-  else return returnSuccess(200, { total: 0, data: [] }, res);
+  }
+  else {
+
+    return returnSuccess(200, { total: 0, data: [] }, res);
+  }
 };
 
 exports.findOne = async (req, res) => {
@@ -149,10 +154,17 @@ exports.findOne = async (req, res) => {
       raw: true,
     });
 
-    if (!result) return returnError(req, 400, "NORECORDFOUND", res);
+    if (!result) {
+      await common.writeLog(req.user.username, `Get Activity - No record found`)
+
+      return returnError(req, 400, "NORECORDFOUND", res);
+    }
+    await common.writeLog(req.user.username, `Get Activity - Record found`)
 
     return returnSuccess(200, result, res);
   } catch (err) {
+
+
     console.log("Error in findOne:", err);
     return returnError(req, 500, "UNEXPECTEDERROR", res);
   }
@@ -183,6 +195,7 @@ exports.create = async (req, res) => {
   });
 
   if (exist) {
+
     return returnError(req, 400, { rDate: "RECORDEXIST" }, res);
   }
   const aType = req.body.aType;
@@ -274,10 +287,13 @@ exports.create = async (req, res) => {
         } catch (error) {
           console.log(error);
           await t.rollback();
+
           return returnError(req, 500, "UNEXPECTEDERROR", res);
         }
+        await common.writeLog(req.user.username, `Created Activity`)
 
         await t.commit();
+
         return returnSuccess(200, { message: "Record has been created", recordId: data.uuid }, res);
       })
       .catch(async (err) => {
@@ -320,6 +336,7 @@ exports.listMedal = async (req, res) => {
       medal11: "N",
       medal12: "N",
     }, res);
+        await common.writeLog(req.user.username, `List Medal`)
 
     return returnSuccess(200, result, res);
   } catch (err) {
@@ -534,6 +551,7 @@ exports.listTips = async (req, res) => {
     const start = Math.max(filteredRows.length - randomCount, 0);
 
     const last15 = filteredRows.slice(start);
+        await common.writeLog(req.user.username, `List Tips`)
 
     return returnSuccess(
       200,

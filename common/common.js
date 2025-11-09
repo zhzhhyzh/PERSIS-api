@@ -1,40 +1,10 @@
 const db = require("../models");
 const _ = require("lodash");
 const { v4: uuidv4 } = require("uuid");
+const moment = require("moment");
 
-async function writeLog(hostname, url, caller, party, type, body, header, mode) {
-  return new Promise(async (resolve, reject) => {
-    let ref = uuidv4();
-    try {
-      routelog
-        .create({
-          logrefnm: ref,
-          // logapidm: hostname,
-          logapinm: url,
-          logerrcd: "",
-          logerrds: "",
-          logheadr: JSON.stringify(header),
-          logincom: type == "T" ? JSON.stringify(body) : "",
-          logoutgg: type == "T" ? "" : JSON.stringify(body),
-          logcallr: caller && !_.isEmpty(caller) ? caller : "",
-          logparty: party,
-          logctype: type,
-          logamode: mode ? mode : "GET",
-          logatype: "OUTGOING"
-        })
-        .then(() => {
-          return resolve(ref);
-        })
-        .catch(async (err) => {
-          console.log("Write Log Error", err);
-          logging("ERR", err);
-          return reject(err);
-        });
-    } catch (err) {
-      return reject(err);
-    }
-  });
-}
+
+const mntlog = db.mntlog;
 
 async function formatDate(value, separator) {
   return new Promise((resolve, reject) => {
@@ -94,9 +64,26 @@ async function formatDecimal(value) {
   });
 }
 
+async function writeLog(username, description) {
+  try {
+    const now = new Date();
+    const localISOTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString();
+
+    await mntlog.create({
+      actDate: localISOTime,
+      username,
+      description
+    });
+  } catch (e) {
+    console.error(e);
+    console.log("username:", username);
+    console.log("description:", description);
+  }
+}
+
 module.exports = {
-formatDate,
-formatDateTime,
-formatDecimal,
+  formatDate,
+  formatDateTime,
+  formatDecimal,
   writeLog,
 }
