@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const Validator = require('validator');
 const { spawn } = require("child_process");
 const _ = require('lodash');
+const common = require("../common/common");
 
 //Table import
 const usrlgnpf = db.usrlgnpf;
@@ -52,6 +53,7 @@ exports.runPythonProcess = async (req, res) => {
 
         pythonProcess.stdout.on("data", (chunk) => {
             console.log("Raw Python Response:", chunk.toString());
+
             responseData += chunk.toString();
         });
 
@@ -62,7 +64,7 @@ exports.runPythonProcess = async (req, res) => {
 
 
 
-        pythonProcess.on("close", (code) => {
+        pythonProcess.on("close", async (code) => {
             if (!responseData.trim()) {
                 console.error("No response received from Python script.");
                 return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
@@ -70,6 +72,9 @@ exports.runPythonProcess = async (req, res) => {
 
             try {
                 const jsonResponse = JSON.parse(responseData.trim()); // Ensure complete JSON
+                if (req.body.invoke_type == 3 && jsonResponse.message == "Success") {
+                    await common.writeLog(req.user.username, `Answered Question ${req.body.questionId}`)
+                }
                 return res.json(jsonResponse);
             } catch (error) {
                 console.error("JSON Parsing Error:", error);

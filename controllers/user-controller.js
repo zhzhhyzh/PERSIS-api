@@ -94,6 +94,8 @@ exports.login = async (req, res) => {
 
 
                             t.commit();
+                            await common.writeLog(req.user.username, `Login Success`)
+
                             return returnSuccess(200, { token: "Bearer " + token }, res);
                         });
 
@@ -157,6 +159,8 @@ exports.change_password = async (req, res) => {
                                 id: user1.id
                             }
                         }).then(async () => {
+                            await common.writeLog(req.user.username, `Reset Password`)
+
                             return returnSuccessMessage(req, 200, "PASSWORDRESET", res);
                         }).catch(err => {
                             console.log(err);
@@ -231,7 +235,8 @@ exports.create = async (req, res) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
             if (err) throw err;
             new_user.password = hash;
-            user.create(new_user).then(() => {
+            user.create(new_user).then(async () => {
+
                 return returnSuccessMessage(req, 200, "RECORDCREATED", res);
             }).catch(err => {
                 console.log(err);
@@ -247,15 +252,17 @@ exports.detail = (req, res) => {
     // Get user ID from authenticated token instead of query parameter
     const userId = req.user ? req.user.id : null;
     if (!userId) return returnError(req, 500, "USERIDNOTFOUND", res);
-    
+
     user.findOne({
         where: {
             id: userId
-        }, 
-        raw: true, 
+        },
+        raw: true,
         attributes: ['id', 'username', 'name', 'gender', 'age']
     }).then(async userData => {
         if (userData) {
+                await common.writeLog(req.user.username, `Retrieve Profile Data`)
+
             return returnSuccess(200, userData, res);
         } else return returnError(req, 500, "NORECORDFOUND", res);
     }).catch(err => {
@@ -335,7 +342,8 @@ exports.update = async (req, res) => {
                 where: {
                     id: user1.id
                 }
-            }).then(() => {
+            }).then(async() => {
+                await common.writeLog(req.user.username, `Updated Profile Data`)
 
                 return returnSuccessMessage(req, 200, "USERUPDATED", res);
             }).catch(err => {

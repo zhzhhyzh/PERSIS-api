@@ -18,6 +18,7 @@ const returnError = require('../common/error');
 const returnSuccess = require('../common/success');
 const returnSuccessMessage = require('../common/successMessage');
 const connection = require("../common/db");
+const common = require("../common/common");
 
 // Input Validation
 
@@ -62,7 +63,7 @@ exports.runPythonProcess = async (req, res) => {
 
 
 
-        pythonProcess.on("close", (code) => {
+        pythonProcess.on("close", async (code) => {
             if (!responseData.trim()) {
                 console.error("No response received from Python script.");
                 return res.status(500).json({ response_type: 3, response: "UnexpectedError" });
@@ -70,6 +71,9 @@ exports.runPythonProcess = async (req, res) => {
 
             try {
                 const jsonResponse = JSON.parse(responseData.trim()); // Ensure complete JSON
+                if (req.body.invoke_type == 3 && jsonResponse.message == "Success") {
+                    await common.writeLog(req.user.username, `Answered Question ${req.body.questionId}`)
+                }
                 return res.json(jsonResponse);
             } catch (error) {
                 console.error("JSON Parsing Error:", error);
