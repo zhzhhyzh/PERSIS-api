@@ -95,7 +95,7 @@ exports.login = async (req, res) => {
 
 
                             t.commit();
-                            await common.writeLog(req.user.username, `Login Success`)
+                            await common.writeLog(req.body.username, `Login Success`)
 
                             return returnSuccess(200, { token: "Bearer " + token }, res);
                         });
