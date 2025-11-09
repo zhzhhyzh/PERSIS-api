@@ -7,6 +7,7 @@ const Validator = require('validator');
 //Table import
 const usrlgnpf = db.usrlgnpf;
 const user = db.user;
+const common = require("../common/common");
 
 
 //Common Function
