@@ -122,11 +122,11 @@ app.get("/config", (req, res) => {
 db.sequelize.sync() // Ensure database sync
     .then(() => {
         console.log("Database synced successfully");
-        app.listen(3000, '0.0.0.0', () => {
+        app.listen(process.env.PORT, '0.0.0.0', () => {
             console.log("==========================================");
-            console.log("Server running on http://0.0.0.0:3000/");
-            console.log("Local access: http://localhost:3000/");
-            console.log("Network access: http://192.168.0.103:3000/");
+            console.log("Server running on http://0.0.0.0:"+ process.env.API_KEY+"/");
+            console.log("Local access: http://localhost:"+process.env.API_KEY+"/");
+            console.log("Network access: http://192.168.0.103:"+process.env.API_KEY+"/");
             console.log("==========================================");
         });
     })
