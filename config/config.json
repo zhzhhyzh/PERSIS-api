@@ -1,7 +1,7 @@
 {
   "local": {
-    "username": "root",
-    "password": "123456",
+    "username": "persis",
+    "password": "#Persis123",
     "database": "persis",
     "host": "127.0.0.1",
     "dialect": "mysql"
