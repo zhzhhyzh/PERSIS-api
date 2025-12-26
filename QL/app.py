@@ -81,6 +81,85 @@ def save_q_table(user_id):
     with open(file_path, "wb") as f:
         pickle.dump(cleaned_q_table, f)
 
+
+# Capture Q-value convergence data
+def capture_convergence_data(user_id, response_type=None, question_data=None):
+    """
+    Log convergence data in simple text format.
+    
+    Args:
+        user_id (str): The username
+        response_type (str): "OK" or "Cancel" 
+        question_data (dict): Question details including message, persuasive_type, activity
+    """
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    if question_data is not None:
+        # Extract question details
+        message = str(question_data.get("message", ""))
+        persuasive_type = question_data.get("persuasive_type", "")
+        activity = question_data.get("activity", "")
+        
+        # Truncate message if too long for logging
+        truncated_message = message[:100] + "..." if len(message) > 100 else message
+        # Remove newlines and extra spaces for clean logging, and handle encoding
+        clean_message = truncated_message.replace('\n', ' ').replace('\r', ' ').strip()
+        # Remove emojis and special characters that might cause encoding issues
+        import re
+        clean_message = re.sub(r'[^\x00-\x7F]+', '', clean_message)
+        
+        # Get Q-value for this specific question
+        q_value = q_table.get((str(question_data.get("message", "")), persuasive_type, activity), 0)
+        
+        log_entry = f"[{timestamp}] [{user_id}] [{response_type}] [{persuasive_type}] [{activity}] [{clean_message}] [{q_value:.6f}]\n"
+    else:
+        # Fallback for general convergence logging
+        q_values = list(q_table.values())
+        avg_q = sum(q_values) / len(q_values) if q_values else 0
+        log_entry = f"[{timestamp}] [{user_id}] [SYSTEM] [Convergence Check] [{avg_q:.6f}]\n"
+    
+    # Log file path
+    log_file_path = os.path.join(os.getcwd(), "documents", "qlearning", "convergence.log")
+    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+    
+    # Append to log file
+    with open(log_file_path, "a") as f:
+        f.write(log_entry)
+
+# Log user interaction to text file
+def log_user_interaction(user_id, response_type, q_value, question_type=None, question_text=None):
+    """
+    Log user interaction to a text file.
+    
+    Args:
+        user_id (str): The username
+        response_type (str): "OK" or "Cancel"
+        q_value (float): The current Q-value for the answered question
+        question_type (str): The type of the question (optional)
+        question_text (str): The text of the question (optional)
+    """
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    log_entry = f"{timestamp} | User: {user_id} | Response: {response_type} | Q-Value: {q_value:.6f}"
+    if question_type:
+        log_entry += f" | Question Type: {question_type}"
+    if question_text:
+        # Clean the question text to remove emojis and special characters
+        import re
+        clean_text = re.sub(r'[^\x00-\x7F]+', '', question_text)
+        # Truncate long question text for readability
+        truncated_text = clean_text[:50] + "..." if len(clean_text) > 50 else clean_text
+        log_entry += f" | Question: {truncated_text}"
+    log_entry += "\n"
+    
+    # Log file path
+    log_file_path = os.path.join(os.getcwd(), "documents", "qlearning", "user_interactions.log")
+    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+    
+    # Append to log file
+    with open(log_file_path, "a") as f:
+        f.write(log_entry)
+        
 # Initialize Q-Table
 def initialize_q_table(messages_df):
     global q_table
@@ -308,6 +387,11 @@ def answer_question(user_id, question_id, answer):
         
         update_q_table(message, persuasive_type, activity, reward, question_id)
         save_q_table(user_id)
+
+        # Log user interaction
+        q_value = q_table.get((message, persuasive_type, activity), 0)
+        response_type = "OK" if answer else "Cancel"
+        log_user_interaction(user_id, response_type, q_value, persuasive_type, message)
 
         return return_json(200, "Success")
     except Exception as e:
