@@ -152,3 +152,45 @@ exports.downloadLog = async (req, res) => {
     return returnError(req, 500, "UNEXPECTEDERROR", res);
   }
 }
+
+exports.listMntLogs = async (req, res) => {
+  try {
+    const folderPath = './documents/mntlogs/';
+    if (!fs.existsSync(folderPath)) {
+      return res.json({ files: [] });
+    }
+
+    let allFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.csv'));
+
+    return res.json({
+      files: allFiles
+    });
+  } catch (err) {
+    console.error(err);
+    return returnError(req, 500, "UNEXPECTEDERROR", res);
+  }
+};
+
+exports.downloadMntLog = async (req, res) => {
+  try {
+    let filename = req.query.filename;
+    if (!filename) return returnError(req, 400, "FILENAME_REQUIRED", res);
+
+    // Prevent directory traversal
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+        return returnError(req, 400, "INVALID_FILENAME", res);
+    }
+
+    let filePath = path.join('./documents/mntlogs/', filename);
+    
+    if (!fs.existsSync(filePath)) {
+        return returnError(req, 404, "FILENOTFOUND", res);
+    }
+
+    res.download(filePath, filename);
+
+  } catch (err) {
+    console.log(err);
+    return returnError(req, 500, "UNEXPECTEDERROR", res);
+  }
+}

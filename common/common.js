@@ -2,6 +2,8 @@ const db = require("../models");
 const _ = require("lodash");
 const { v4: uuidv4 } = require("uuid");
 const moment = require("moment");
+const fs = require('fs');
+const path = require('path');
 
 
 const mntlog = db.mntlog;
@@ -74,6 +76,21 @@ async function writeLog(username, description) {
       username,
       description
     });
+
+    // Auto store log to CSV
+    const logDir = path.join(__dirname, '../documents/mntlogs');
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+
+    const csvFile = path.join(logDir, `${username}.csv`);
+    const csvLine = `"${localISOTime}","${username}","${description}"\n`;
+
+    if (!fs.existsSync(csvFile)) {
+        fs.writeFileSync(csvFile, 'actDate,username,description\n');
+    }
+    fs.appendFileSync(csvFile, csvLine);
+
   } catch (e) {
     console.error(e);
     console.log("username:", username);

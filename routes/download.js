@@ -37,6 +37,16 @@ router.get('/listLogs', download.listLogs);
 // @access  Public
 router.get('/downloadLog', download.downloadLog);
 
+// @route   GET api/download/listMntLogs
+// @desc    List mntlog files
+// @access  Public
+router.get('/listMntLogs', download.listMntLogs);
+
+// @route   GET api/download/downloadMntLog
+// @desc    Download mntlog file
+// @access  Public
+router.get('/downloadMntLog', download.downloadMntLog);
+
 
 module.exports = router;
 
