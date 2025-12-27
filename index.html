@@ -156,12 +156,14 @@
             const data = await res.json();
             API_KEY = data.apiKey;   // assign value
             console.log("API_KEY:", API_KEY);
+            
+            // Load data after config is loaded
+            loadFiles();
+            loadLogs();
+            loadMntLogs();
         }
 
         loadConfig();
-
-
-        async function loadFiles() {
             const page = document.getElementById('page').value;
             const limit = document.getElementById('limit').value;
             const search = document.getElementById('search').value;
@@ -298,9 +300,9 @@
             }
         }
 
-        loadFiles();
-        loadLogs();
-        loadMntLogs();
+        // loadFiles();
+        // loadLogs();
+        // loadMntLogs();
     </script>
 </body>
 

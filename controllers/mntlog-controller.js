@@ -110,7 +110,17 @@ exports.list = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const { username, description } = req.body;
+        let { username, description } = req.body;
+        
+        // Use authenticated user's username if available
+        if (req.user && req.user.username) {
+            username = req.user.username;
+        }
+
+        if (!username) {
+             return returnError(400, "Username is required", res);
+        }
+
         const actDate = new Date();
 
         // Save to DB
