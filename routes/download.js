@@ -27,5 +27,18 @@ router.get('/list', download.list);
 // @access  Public
 router.get('/downloadZip', download.downloadZip);
 
+// @route   GET api/download/listLogs
+// @desc    List log files
+// @access  Public
+router.get('/listLogs', download.listLogs);
+
+// @route   GET api/download/downloadLog
+// @desc    Download log file
+// @access  Public
+router.get('/downloadLog', download.downloadLog);
+
+
+module.exports = router;
+
 
 module.exports = router;

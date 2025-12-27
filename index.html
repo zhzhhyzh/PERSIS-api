@@ -121,6 +121,19 @@
         </table>
     </div>
 
+    <div class="container" style="margin-top: 20px;">
+        <h1>System Logs</h1>
+        <table id="logTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
     <script>
         const API_BASE = `${window.location.origin}/api`;
         let API_KEY; // declare global
@@ -183,7 +196,51 @@
             window.location.href = `${API_BASE}/download/downloadZip`;
         }
 
+        async function loadLogs() {
+            const res = await fetch(`${API_BASE}/download/listLogs`, {
+                method: 'GET',
+                headers: {
+                    'api-key': API_KEY,
+                    'content-type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            const tbody = document.querySelector('#logTable tbody');
+            tbody.innerHTML = '';
+
+            if (data.files && data.files.length > 0) {
+                data.files.forEach(filename => {
+                    const row = document.createElement('tr');
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = filename;
+
+                    const downloadCell = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.textContent = "Download";
+                    btn.onclick = () => {
+                        window.location.href = `${API_BASE}/download/downloadLog?filename=${filename}`;
+                    };
+                    downloadCell.appendChild(btn);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(downloadCell);
+                    tbody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 2;
+                cell.textContent = "No logs found";
+                cell.style.textAlign = "center";
+                row.appendChild(cell);
+                tbody.appendChild(row);
+            }
+        }
+
         loadFiles();
+        loadLogs();
     </script>
 </body>
 
