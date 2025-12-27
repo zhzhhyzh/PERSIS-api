@@ -360,9 +360,8 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
                     max_q_value = max(valid_values)
             new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
     else:
-        new_value = previous_value - 0.3  # Reduce penalty to avoid eliminating types too quickly
-        if new_value < 0:
-            new_value = 0
+        new_value = previous_value - 0.01  # Reduce penalty to avoid eliminating types too quickly
+        
     
     # Ensure new_value is not NaN/inf
     if pd.isna(new_value) or np.isnan(new_value) or np.isinf(new_value):
