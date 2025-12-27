@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 // const { spawn } = require("child_process");
 const db = require("./models")
@@ -103,6 +104,10 @@ app.use('/api/activity', activity);
 
 const mntlog = require("./routes/mntlog");
 app.use('/api/mntlog', mntlog);
+
+app.get("/admin", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 
 
 
