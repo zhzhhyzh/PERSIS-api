@@ -44,7 +44,7 @@ exports.runPythonProcess = async (req, res) => {
         }
 
 
-        const pythonProcess = spawn("py", ["./QL/app.py"]);
+        const pythonProcess = spawn("python", ["./QL/app.py"]);
 
         pythonProcess.stdin.write(JSON.stringify(req.body));
         pythonProcess.stdin.end();
