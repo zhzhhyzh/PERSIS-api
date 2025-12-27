@@ -12,5 +12,20 @@ const mntlog = require("../controllers/mntlog-controller");
 // @access  Private
 router.get("/list", authenticateRoute, mntlog.list);
 
+// @route   POST api/mntlog/create
+// @desc    Create Log
+// @access  Private
+router.post("/create", authenticateRoute, mntlog.create);
+
+// @route   GET api/mntlog/files
+// @desc    List Log Files
+// @access  Public
+router.get("/files", mntlog.getFiles);
+
+// @route   GET api/mntlog/download/:filename
+// @desc    Download Log File
+// @access  Public
+router.get("/download/:filename", mntlog.download);
+
 
 module.exports = router;

@@ -134,6 +134,19 @@
         </table>
     </div>
 
+    <div class="container" style="margin-top: 20px;">
+        <h1>User Activity Logs (MntLogs)</h1>
+        <table id="mntLogTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
     <script>
         const API_BASE = `${window.location.origin}/api`;
         let API_KEY; // declare global
@@ -239,8 +252,55 @@
             }
         }
 
+        async function loadMntLogs() {
+            const res = await fetch(`${API_BASE}/mntlog/files`, {
+                method: 'GET',
+                headers: {
+                    'api-key': API_KEY,
+                    'content-type': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            // returnSuccess returns data in 'message' property
+            const files = data.message; 
+
+            const tbody = document.querySelector('#mntLogTable tbody');
+            tbody.innerHTML = '';
+
+            if (files && files.length > 0) {
+                files.forEach(filename => {
+                    const row = document.createElement('tr');
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = filename;
+
+                    const downloadCell = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.textContent = "Download";
+                    btn.onclick = () => {
+                        window.location.href = `${API_BASE}/mntlog/download/${filename}`;
+                    };
+                    downloadCell.appendChild(btn);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(downloadCell);
+                    tbody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 2;
+                cell.textContent = "No logs found";
+                cell.style.textAlign = "center";
+                row.appendChild(cell);
+                tbody.appendChild(row);
+            }
+        }
+
         loadFiles();
         loadLogs();
+        loadMntLogs();
     </script>
 </body>
 

@@ -107,3 +107,67 @@ exports.list = async (req, res) => {
         return returnSuccess(200, { total: 0, data: [] }, res);
     }
 };
+
+exports.create = async (req, res) => {
+    try {
+        const { username, description } = req.body;
+        const actDate = new Date();
+
+        // Save to DB
+        await mntlog.create({
+            username,
+            actDate,
+            description
+        });
+
+        // Save to CSV
+        const dirPath = path.join(__dirname, '../documents/mntlogs');
+        if (!fs.existsSync(dirPath)){
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+        const filePath = path.join(dirPath, `${username}.csv`);
+        
+        const header = 'username,actDate,description\n';
+        // Escape quotes in description
+        const safeDescription = description ? description.replace(/"/g, '""') : "";
+        const row = `"${username}","${actDate.toISOString()}","${safeDescription}"\n`;
+
+        if (!fs.existsSync(filePath)) {
+            fs.writeFileSync(filePath, header + row);
+        } else {
+            fs.appendFileSync(filePath, row);
+        }
+
+        return returnSuccess(200, { message: "Log created successfully" }, res);
+    } catch (error) {
+        return returnError(500, error.message, res);
+    }
+};
+
+exports.getFiles = async (req, res) => {
+    try {
+        const dirPath = path.join(__dirname, '../documents/mntlogs');
+        if (!fs.existsSync(dirPath)){
+             return returnSuccess(200, [], res);
+        }
+        const files = fs.readdirSync(dirPath);
+        return returnSuccess(200, files, res);
+    } catch (error) {
+        return returnError(500, error.message, res);
+    }
+};
+
+exports.download = async (req, res) => {
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(__dirname, '../documents/mntlogs', filename);
+        
+        if (fs.existsSync(filePath)) {
+            res.download(filePath);
+        } else {
+            return returnError(404, "File not found", res);
+        }
+    } catch (error) {
+        return returnError(500, error.message, res);
+    }
+};
