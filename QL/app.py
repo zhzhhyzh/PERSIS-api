@@ -129,7 +129,7 @@ def capture_convergence_data(user_id, response_type=None, question_data=None):
 # Log user interaction to text file
 def log_user_interaction(user_id, response_type, q_value, question_type=None, question_text=None):
     """
-    Log user interaction to a CSV file with group Q-values.
+    Log user interaction to a CSV file in transposed format (Rows=Metrics/Combinations, Cols=Interactions).
     
     Args:
         user_id (str): The username
@@ -140,7 +140,7 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
     """
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # --- CSV Logging with Group Max Q-Values ---
+    # --- CSV Logging Transposed ---
     try:
         # 1. Define fixed combinations
         fixed_combinations = [
@@ -162,38 +162,52 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
             ("praise", "portion control")
         ]
 
-        # Initialize group_max_q with 0 for all fixed combinations
-        group_max_q = {f"{p_type}_{act}": 0.0 for p_type, act in fixed_combinations}
-
         # 2. Calculate max Q-value per group from q_table
+        current_group_values = {}
+        
+        # Initialize with 0.0 or current value
+        for p_type, act in fixed_combinations:
+            group_key = f"{p_type}_{act}"
+            current_group_values[group_key] = 0.0
+            
+            # Find max Q for this specific group in the q_table
+            # We iterate q_table to find matches for this group
+            # Optimization: Pre-calculate max for all groups once if q_table is large, 
+            # but here we iterate specifically to ensure we capture the max for the requested combination.
+            
+            # Actually, iterating q_table for each combination is O(N*M). 
+            # Better to iterate q_table once and fill a dict.
+            pass
+
+        # Efficiently gather max Q-values from q_table
+        calculated_max_q = {}
         for key, value in q_table.items():
             _, p_type, act = key
-            group_key = f"{p_type}_{act}" 
+            group_key = f"{p_type}_{act}"
             
-            # Handle NaN/Inf in value
             val = 0.0
             if not (pd.isna(value) or np.isnan(value) or np.isinf(value)):
                 val = float(value)
             
-            # Update max value if this group is in our list (or even if it's new, if we want to keep dynamic behavior)
-            if group_key in group_max_q:
-                if val > group_max_q[group_key]:
-                    group_max_q[group_key] = val
+            if group_key not in calculated_max_q:
+                calculated_max_q[group_key] = val
             else:
-                # Also track other groups if they appear in q_table but are not in fixed list
-                if group_key not in group_max_q:
-                     group_max_q[group_key] = val
-                else:
-                     if val > group_max_q[group_key]:
-                        group_max_q[group_key] = val
+                if val > calculated_max_q[group_key]:
+                    calculated_max_q[group_key] = val
         
-        # 3. Prepare row data
+        # Populate current_group_values with calculated maxs, defaulting to 0.0
+        for p_type, act in fixed_combinations:
+            group_key = f"{p_type}_{act}"
+            current_group_values[group_key] = calculated_max_q.get(group_key, 0.0)
+
+        # 3. Prepare the data for the new column
         import re
         clean_text_full = ""
         if question_text:
              clean_text_full = re.sub(r'[^\x00-\x7F]+', '', question_text).replace('\n', ' ').strip()
 
-        row_data = {
+        # Define the order of rows (Metrics first, then Combinations)
+        new_col_data = {
             "Timestamp": timestamp,
             "User_ID": user_id,
             "Response": response_type,
@@ -201,36 +215,51 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
             "Message": clean_text_full,
             "Persuasive_Type": question_type if question_type else "",
         }
-        
-        # Add group max Q values to row data
-        row_data.update(group_max_q)
+        # Add combinations
+        new_col_data.update(current_group_values)
 
-        # 4. Save to CSV
+        # 4. Save to CSV (Transposed Logic)
         csv_file_path = os.path.join(os.getcwd(), "documents", "qlearning", f"{user_id}_q_history.csv")
         os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
         
-        # Create DataFrame
-        df = pd.DataFrame([row_data])
-        
         if not os.path.exists(csv_file_path):
+            # Create new DataFrame with 'Metric' as the first column
+            # and 'Interaction_1' as the second column
+            df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Interaction_1'])
             df.to_csv(csv_file_path, index=False)
         else:
-            # Check existing columns to ensure alignment
-            existing_df = pd.read_csv(csv_file_path, nrows=0)
-            existing_columns = list(existing_df.columns)
+            # Read existing CSV
+            df = pd.read_csv(csv_file_path)
             
-            # Check for new columns
-            new_cols = [c for c in df.columns if c not in existing_columns]
-            
-            if new_cols:
-                # If new columns appeared, read full file, concat, and save (slower but safe)
-                full_df = pd.read_csv(csv_file_path)
-                full_df = pd.concat([full_df, df], ignore_index=True)
-                full_df.to_csv(csv_file_path, index=False)
+            # Check if it's the old format (by checking columns)
+            if 'Metric' not in df.columns:
+                # Old format detected, overwrite with new format (or handle migration if needed)
+                # For now, we overwrite to enforce the new structure requested
+                df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Interaction_1'])
+                df.to_csv(csv_file_path, index=False)
             else:
-                # Reorder columns to match existing file and append
-                df = df[existing_columns]
-                df.to_csv(csv_file_path, mode='a', header=False, index=False)
+                # New format exists, append a new column
+                new_col_name = f"Interaction_{len(df.columns)}" # e.g. Interaction_2
+                
+                # We need to align the new data with the existing 'Metric' rows
+                # Set Metric as index to facilitate alignment
+                df.set_index('Metric', inplace=True)
+                
+                # Create a Series for the new column
+                new_series = pd.Series(new_col_data, name=new_col_name)
+                
+                # Assign the new column. 
+                # Note: If new_col_data has keys not in df, they will be added as new rows (with NaNs in previous cols).
+                # If df has keys not in new_col_data, they will get NaN in new col.
+                df[new_col_name] = new_series
+                
+                # Reset index to save 'Metric' as a column again
+                df.reset_index(inplace=True)
+                
+                # Fill NaNs with empty string or 0 if appropriate, but CSV handles empty well.
+                # For Q-values, maybe 0? For now leave as empty/NaN.
+                
+                df.to_csv(csv_file_path, index=False)
 
     except Exception as e:
         print(f"Error logging to CSV: {str(e)}", file=sys.stderr)
