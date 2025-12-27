@@ -347,7 +347,7 @@ def get_next_message():
     return message
 
 # Update Q-Table based on user response
-def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.001, gamma=0.99):
+def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.2, gamma=0.9):
     key = (message, persuasive_type, activity)
     previous_value = q_table.get(key, 0)
     
@@ -357,19 +357,22 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     
     # Reward shaping (increase reward if consistent positive feedback)
     if reward == 1:
-        reward += 0.1  # Reduce bonus to avoid over-optimization of single type
-        if question_id == 1 or question_id == 2:
-            new_value = previous_value + learning_rate * (reward + gamma)
-        else:
-            # Safely calculate max value, handling potential NaN/inf values
-            max_q_value = 0
-            if q_table:
-                valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
-                if valid_values:
-                    max_q_value = max(valid_values)
-            new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
+        reward_val = 1.0
+        
+        # Calculate max Q value
+        max_q_value = 0
+        if q_table:
+            valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
+            if valid_values:
+                max_q_value = max(valid_values)
+                
+        # Standard Q-learning update
+        # NewQ = OldQ + Alpha * (Reward + Gamma * MaxQ - OldQ)
+        new_value = previous_value + learning_rate * (reward_val + gamma * max_q_value - previous_value)
+        
     else:
-        new_value = previous_value - 0.3  # Reduce penalty to avoid eliminating types too quickly
+        # Penalty for rejection
+        new_value = previous_value - 0.1  # Smaller penalty to avoid zeroing out too fast
         if new_value < 0:
             new_value = 0
     
