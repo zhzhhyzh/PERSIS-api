@@ -127,7 +127,7 @@ def capture_convergence_data(user_id, response_type=None, question_data=None):
         f.write(log_entry)
 
 # Log user interaction to text file
-def log_user_interaction(user_id, response_type, q_value, question_type=None, question_text=None):
+def log_user_interaction(user_id, response_type, q_value, question_type=None, question_text=None, activity=None):
     """
     Log user interaction to a CSV file in transposed format (Rows=Metrics/Combinations, Cols=Interactions).
     
@@ -137,6 +137,7 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
         q_value (float): The current Q-value for the answered question
         question_type (str): The type of the question (optional)
         question_text (str): The text of the question (optional)
+        activity (str): The activity of the question (optional)
     """
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -191,11 +192,16 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
         if question_text:
              clean_text_full = re.sub(r'[^\x00-\x7F]+', '', question_text).replace('\n', ' ').strip()
 
+        current_combination = ""
+        if question_type and activity:
+            current_combination = f"{question_type}_{activity}"
+
         # Define the order of rows (Metrics first, then Combinations)
         new_col_data = {
             "User_ID": user_id,
             "Response": response_type,
             "Interaction_Q_Value": q_value,
+            "Combination": current_combination
         }
         # Add combinations
         new_col_data.update(current_group_values)
@@ -500,7 +506,7 @@ def answer_question(user_id, question_id, answer):
         # Log user interaction
         q_value = q_table.get((message, persuasive_type, activity), 0)
         response_type = "OK" if answer else "Cancel"
-        log_user_interaction(user_id, response_type, q_value, persuasive_type, message)
+        log_user_interaction(user_id, response_type, q_value, persuasive_type, message, activity)
 
         return return_json(200, "Success")
     except Exception as e:
