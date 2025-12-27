@@ -142,24 +142,52 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
 
     # --- CSV Logging with Group Max Q-Values ---
     try:
-        # 1. Calculate max Q-value per group (persuasive_type, activity)
-        group_max_q = {}
+        # 1. Define fixed combinations
+        fixed_combinations = [
+            ("reminder", "meal planning"),
+            ("suggestion", "meal planning"),
+            ("reward", "meal planning"),
+            ("praise", "meal planning"),
+            ("reminder", "water intake"),
+            ("suggestion", "water intake"),
+            ("reward", "water intake"),
+            ("praise", "water intake"),
+            ("reminder", "healthy eating"),
+            ("suggestion", "healthy eating"),
+            ("reward", "healthy eating"),
+            ("praise", "healthy eating"),
+            ("reminder", "portion control"),
+            ("suggestion", "portion control"),
+            ("reward", "portion control"),
+            ("praise", "portion control")
+        ]
+
+        # Initialize group_max_q with 0 for all fixed combinations
+        group_max_q = {f"{p_type}_{act}": 0.0 for p_type, act in fixed_combinations}
+
+        # 2. Calculate max Q-value per group from q_table
         for key, value in q_table.items():
             _, p_type, act = key
-            group_key = f"{p_type}_{act}" # Create a string key for column name
+            group_key = f"{p_type}_{act}" 
             
             # Handle NaN/Inf in value
-            val = 0
+            val = 0.0
             if not (pd.isna(value) or np.isnan(value) or np.isinf(value)):
-                val = value
+                val = float(value)
             
-            if group_key not in group_max_q:
-                group_max_q[group_key] = val
-            else:
+            # Update max value if this group is in our list (or even if it's new, if we want to keep dynamic behavior)
+            if group_key in group_max_q:
                 if val > group_max_q[group_key]:
                     group_max_q[group_key] = val
+            else:
+                # Also track other groups if they appear in q_table but are not in fixed list
+                if group_key not in group_max_q:
+                     group_max_q[group_key] = val
+                else:
+                     if val > group_max_q[group_key]:
+                        group_max_q[group_key] = val
         
-        # 2. Prepare row data
+        # 3. Prepare row data
         import re
         clean_text_full = ""
         if question_text:
@@ -177,12 +205,35 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
         # Add group max Q values to row data
         row_data.update(group_max_q)
 
-        # 3. Save to CSV
+        # 4. Save to CSV
         csv_file_path = os.path.join(os.getcwd(), "documents", "qlearning", f"{user_id}_q_history.csv")
         os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
         
         # Create DataFrame
         df = pd.DataFrame([row_data])
+        
+        if not os.path.exists(csv_file_path):
+            df.to_csv(csv_file_path, index=False)
+        else:
+            # Check existing columns to ensure alignment
+            existing_df = pd.read_csv(csv_file_path, nrows=0)
+            existing_columns = list(existing_df.columns)
+            
+            # Check for new columns
+            new_cols = [c for c in df.columns if c not in existing_columns]
+            
+            if new_cols:
+                # If new columns appeared, read full file, concat, and save (slower but safe)
+                full_df = pd.read_csv(csv_file_path)
+                full_df = pd.concat([full_df, df], ignore_index=True)
+                full_df.to_csv(csv_file_path, index=False)
+            else:
+                # Reorder columns to match existing file and append
+                df = df[existing_columns]
+                df.to_csv(csv_file_path, mode='a', header=False, index=False)
+
+    except Exception as e:
+        print(f"Error logging to CSV: {str(e)}", file=sys.stderr)
         
         if not os.path.exists(csv_file_path):
             df.to_csv(csv_file_path, index=False)
