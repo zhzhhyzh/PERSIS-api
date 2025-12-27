@@ -162,25 +162,11 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
             ("praise", "portion control")
         ]
 
-        # 2. Calculate max Q-value per group from q_table
+        # 2. Calculate TOTAL Q-value per group from q_table
         current_group_values = {}
         
-        # Initialize with 0.0 or current value
-        for p_type, act in fixed_combinations:
-            group_key = f"{p_type}_{act}"
-            current_group_values[group_key] = 0.0
-            
-            # Find max Q for this specific group in the q_table
-            # We iterate q_table to find matches for this group
-            # Optimization: Pre-calculate max for all groups once if q_table is large, 
-            # but here we iterate specifically to ensure we capture the max for the requested combination.
-            
-            # Actually, iterating q_table for each combination is O(N*M). 
-            # Better to iterate q_table once and fill a dict.
-            pass
-
-        # Efficiently gather max Q-values from q_table
-        calculated_max_q = {}
+        # Efficiently gather total Q-values from q_table
+        calculated_total_q = {}
         for key, value in q_table.items():
             _, p_type, act = key
             group_key = f"{p_type}_{act}"
@@ -189,16 +175,15 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
             if not (pd.isna(value) or np.isnan(value) or np.isinf(value)):
                 val = float(value)
             
-            if group_key not in calculated_max_q:
-                calculated_max_q[group_key] = val
+            if group_key not in calculated_total_q:
+                calculated_total_q[group_key] = val
             else:
-                if val > calculated_max_q[group_key]:
-                    calculated_max_q[group_key] = val
+                calculated_total_q[group_key] += val
         
-        # Populate current_group_values with calculated maxs, defaulting to 0.0
+        # Populate current_group_values with calculated totals, defaulting to 0.0
         for p_type, act in fixed_combinations:
             group_key = f"{p_type}_{act}"
-            current_group_values[group_key] = calculated_max_q.get(group_key, 0.0)
+            current_group_values[group_key] = calculated_total_q.get(group_key, 0.0)
 
         # 3. Prepare the data for the new column
         import re
@@ -347,7 +332,7 @@ def get_next_message():
     return message
 
 # Update Q-Table based on user response
-def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.2, gamma=0.9):
+def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.001, gamma=0.99):
     key = (message, persuasive_type, activity)
     previous_value = q_table.get(key, 0)
     
@@ -357,22 +342,19 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     
     # Reward shaping (increase reward if consistent positive feedback)
     if reward == 1:
-        reward_val = 1.0
-        
-        # Calculate max Q value
-        max_q_value = 0
-        if q_table:
-            valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
-            if valid_values:
-                max_q_value = max(valid_values)
-                
-        # Standard Q-learning update
-        # NewQ = OldQ + Alpha * (Reward + Gamma * MaxQ - OldQ)
-        new_value = previous_value + learning_rate * (reward_val + gamma * max_q_value - previous_value)
-        
+        reward += 0.1  # Reduce bonus to avoid over-optimization of single type
+        if question_id == 1 or question_id == 2:
+            new_value = previous_value + learning_rate * (reward + gamma)
+        else:
+            # Safely calculate max value, handling potential NaN/inf values
+            max_q_value = 0
+            if q_table:
+                valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
+                if valid_values:
+                    max_q_value = max(valid_values)
+            new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
     else:
-        # Penalty for rejection
-        new_value = previous_value - 0.1  # Smaller penalty to avoid zeroing out too fast
+        new_value = previous_value - 0.3  # Reduce penalty to avoid eliminating types too quickly
         if new_value < 0:
             new_value = 0
     
