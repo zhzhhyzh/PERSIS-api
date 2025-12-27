@@ -208,12 +208,9 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
 
         # Define the order of rows (Metrics first, then Combinations)
         new_col_data = {
-            "Timestamp": timestamp,
             "User_ID": user_id,
             "Response": response_type,
             "Interaction_Q_Value": q_value,
-            "Message": clean_text_full,
-            "Persuasive_Type": question_type if question_type else "",
         }
         # Add combinations
         new_col_data.update(current_group_values)
@@ -225,7 +222,7 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
         if not os.path.exists(csv_file_path):
             # Create new DataFrame with 'Metric' as the first column
             # and 'Interaction_1' as the second column
-            df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Interaction_1'])
+            df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Ans_1'])
             df.to_csv(csv_file_path, index=False)
         else:
             # Read existing CSV
@@ -235,11 +232,11 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
             if 'Metric' not in df.columns:
                 # Old format detected, overwrite with new format (or handle migration if needed)
                 # For now, we overwrite to enforce the new structure requested
-                df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Interaction_1'])
+                df = pd.DataFrame(list(new_col_data.items()), columns=['Metric', 'Ans_1'])
                 df.to_csv(csv_file_path, index=False)
             else:
                 # New format exists, append a new column
-                new_col_name = f"Interaction_{len(df.columns)}" # e.g. Interaction_2
+                new_col_name = f"Ans_{len(df.columns)}" # e.g. Interaction_2    
                 
                 # We need to align the new data with the existing 'Metric' rows
                 # Set Metric as index to facilitate alignment
