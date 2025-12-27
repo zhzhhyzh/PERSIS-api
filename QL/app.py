@@ -129,7 +129,7 @@ def capture_convergence_data(user_id, response_type=None, question_data=None):
 # Log user interaction to text file
 def log_user_interaction(user_id, response_type, q_value, question_type=None, question_text=None):
     """
-    Log user interaction to a text file.
+    Log user interaction to a CSV file with group Q-values.
     
     Args:
         user_id (str): The username
@@ -139,26 +139,73 @@ def log_user_interaction(user_id, response_type, q_value, question_type=None, qu
         question_text (str): The text of the question (optional)
     """
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    log_entry = f"{timestamp} | User: {user_id} | Response: {response_type} | Q-Value: {q_value:.6f}"
-    if question_type:
-        log_entry += f" | Question Type: {question_type}"
-    if question_text:
-        # Clean the question text to remove emojis and special characters
+
+    # --- CSV Logging with Group Max Q-Values ---
+    try:
+        # 1. Calculate max Q-value per group (persuasive_type, activity)
+        group_max_q = {}
+        for key, value in q_table.items():
+            _, p_type, act = key
+            group_key = f"{p_type}_{act}" # Create a string key for column name
+            
+            # Handle NaN/Inf in value
+            val = 0
+            if not (pd.isna(value) or np.isnan(value) or np.isinf(value)):
+                val = value
+            
+            if group_key not in group_max_q:
+                group_max_q[group_key] = val
+            else:
+                if val > group_max_q[group_key]:
+                    group_max_q[group_key] = val
+        
+        # 2. Prepare row data
         import re
-        clean_text = re.sub(r'[^\x00-\x7F]+', '', question_text)
-        # Truncate long question text for readability
-        truncated_text = clean_text[:50] + "..." if len(clean_text) > 50 else clean_text
-        log_entry += f" | Question: {truncated_text}"
-    log_entry += "\n"
-    
-    # Log file path
-    log_file_path = os.path.join(os.getcwd(), "documents", "qlearning", "user_interactions.log")
-    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-    
-    # Append to log file
-    with open(log_file_path, "a") as f:
-        f.write(log_entry)
+        clean_text_full = ""
+        if question_text:
+             clean_text_full = re.sub(r'[^\x00-\x7F]+', '', question_text).replace('\n', ' ').strip()
+
+        row_data = {
+            "Timestamp": timestamp,
+            "User_ID": user_id,
+            "Response": response_type,
+            "Interaction_Q_Value": q_value,
+            "Message": clean_text_full,
+            "Persuasive_Type": question_type if question_type else "",
+        }
+        
+        # Add group max Q values to row data
+        row_data.update(group_max_q)
+
+        # 3. Save to CSV
+        csv_file_path = os.path.join(os.getcwd(), "documents", "qlearning", f"{user_id}_q_history.csv")
+        os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
+        
+        # Create DataFrame
+        df = pd.DataFrame([row_data])
+        
+        if not os.path.exists(csv_file_path):
+            df.to_csv(csv_file_path, index=False)
+        else:
+            # Check existing columns to ensure alignment
+            existing_df = pd.read_csv(csv_file_path, nrows=0)
+            existing_columns = list(existing_df.columns)
+            
+            # Check for new columns
+            new_cols = [c for c in df.columns if c not in existing_columns]
+            
+            if new_cols:
+                # If new columns appeared, read full file, concat, and save (slower but safe)
+                full_df = pd.read_csv(csv_file_path)
+                full_df = pd.concat([full_df, df], ignore_index=True)
+                full_df.to_csv(csv_file_path, index=False)
+            else:
+                # Reorder columns to match existing file and append
+                df = df[existing_columns]
+                df.to_csv(csv_file_path, mode='a', header=False, index=False)
+
+    except Exception as e:
+        print(f"Error logging to CSV: {str(e)}", file=sys.stderr)
         
 # Initialize Q-Table
 def initialize_q_table(messages_df):

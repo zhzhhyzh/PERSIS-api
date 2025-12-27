@@ -118,7 +118,7 @@ exports.listLogs = async (req, res) => {
       return res.json({ files: [] });
     }
 
-    let allFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.log'));
+    let allFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.log') || file.endsWith('.csv'));
 
     return res.json({
       files: allFiles
