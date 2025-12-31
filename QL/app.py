@@ -338,7 +338,7 @@ def get_next_message():
     return message
 
 # Update Q-Table based on user response
-def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.001, gamma=0.99):
+def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=1.000, gamma=0.99):
     key = (message, persuasive_type, activity)
     previous_value = q_table.get(key, 0)
     
