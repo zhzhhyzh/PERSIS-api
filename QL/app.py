@@ -348,7 +348,7 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     
     # Reward shaping (increase reward if consistent positive feedback)
     if reward == 1:
-        reward += 0.1  # Reduce bonus to avoid over-optimization of single type
+        reward += 1.0  # Reduce bonus to avoid over-optimization of single type
         if question_id == 1 or question_id == 2:
             new_value = previous_value + learning_rate * (reward + gamma)
         else:
@@ -360,7 +360,7 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
                     max_q_value = max(valid_values)
             new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
     else:
-        new_value = previous_value - 0.01  # Reduce penalty to avoid eliminating types too quickly
+        new_value = previous_value - 3.0  # Reduce penalty to avoid eliminating types too quickly
         
     
     # Ensure new_value is not NaN/inf
