@@ -348,7 +348,6 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     
     # Reward shaping (increase reward if consistent positive feedback)
     if reward == 1:
-        reward += 1.0  # Reduce bonus to avoid over-optimization of single type
         if question_id == 1 or question_id == 2:
             new_value = previous_value + reward
         else:
