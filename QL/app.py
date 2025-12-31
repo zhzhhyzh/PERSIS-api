@@ -350,7 +350,7 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     if reward == 1:
         reward += 1.0  # Reduce bonus to avoid over-optimization of single type
         if question_id == 1 or question_id == 2:
-            new_value = previous_value + learning_rate * (reward + gamma)
+            new_value = previous_value + reward
         else:
             # Safely calculate max value, handling potential NaN/inf values
             max_q_value = 0
@@ -358,7 +358,7 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
                 valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
                 if valid_values:
                     max_q_value = max(valid_values)
-            new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
+            new_value = previous_value + reward
     else:
         new_value = previous_value - 3.0  # Reduce penalty to avoid eliminating types too quickly
         
