@@ -338,7 +338,7 @@ def get_next_message():
     return message
 
 # Update Q-Table based on user response
-def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=1.000, gamma=0.99):
+def update_q_table(message, persuasive_type, activity, reward, question_id, learning_rate=0.05, gamma=0.99):
     key = (message, persuasive_type, activity)
     previous_value = q_table.get(key, 0)
     
@@ -349,7 +349,7 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
     # Reward shaping (increase reward if consistent positive feedback)
     if reward == 1:
         if question_id == 1 or question_id == 2:
-            new_value = previous_value + reward
+            new_value = previous_value + learning_rate * (reward + gamma)
         else:
             # Safely calculate max value, handling potential NaN/inf values
             max_q_value = 0
@@ -357,9 +357,9 @@ def update_q_table(message, persuasive_type, activity, reward, question_id, lear
                 valid_values = [v for v in q_table.values() if not (pd.isna(v) or np.isnan(v) or np.isinf(v))]
                 if valid_values:
                     max_q_value = max(valid_values)
-            new_value = previous_value + reward
+            new_value = previous_value + learning_rate * (reward + gamma * max_q_value - previous_value)
     else:
-        new_value = previous_value - 3.0  # Reduce penalty to avoid eliminating types too quickly
+        new_value = previous_value - 1.0  # Reduce penalty to avoid eliminating types too quickly
         
     
     # Ensure new_value is not NaN/inf
